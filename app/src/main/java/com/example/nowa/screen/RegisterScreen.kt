@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.screen
+package com.example.nowa.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
