@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kelompok_nokonteks_tam_nowa.data.model.Post
-import com.example.kelompok_nokonteks_tam_nowa.data.remote.RetrofitClient
+import com.example.nowa.data.model.Post
+import com.example.nowa.data.remote.RetrofitClient
 import kotlinx.coroutines.launch
 
 class PostViewModel : ViewModel() {

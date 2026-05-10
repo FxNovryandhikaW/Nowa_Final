@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.ui.theme
+package com.example.nowa.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -34,7 +34,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun KelompokNoKonteks_TAM_NOWATheme(
+fun NowaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

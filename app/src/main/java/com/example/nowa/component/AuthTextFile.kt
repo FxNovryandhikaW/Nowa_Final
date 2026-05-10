@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.component
+package com.example.nowa.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.kelompok_nokonteks_tam_nowa.ui.theme.*
+import com.example.nowa.ui.theme.*
 
 @Composable
 fun AuthTextField(label: String, value: String, placeholder: String, onValueChange: (String) -> Unit, isPassword: Boolean = false) {

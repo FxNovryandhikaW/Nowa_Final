@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.data.model
+package com.example.nowa.data.model
 
 data class Post(
     val userId: Int,

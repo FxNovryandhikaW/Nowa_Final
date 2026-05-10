@@ -1,7 +1,8 @@
-package com.example.kelompok_nokonteks_tam_nowa.screens
+package com.example.nowa.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -20,8 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.kelompok_nokonteks_tam_nowa.component.SectionHeader
-import com.example.kelompok_nokonteks_tam_nowa.ui.theme.*
+import com.example.nowa.R
+import com.example.nowa.component.SectionHeader
+import com.example.nowa.ui.theme.*
 
 @Composable
 fun ProfilScreen(navController: NavHostController) {
@@ -52,7 +54,7 @@ fun ProfilScreen(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = R.mipmap.ic_launcher),
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(80.dp)
@@ -71,13 +73,16 @@ fun ProfilScreen(navController: NavHostController) {
         ) {
             LazyColumn(modifier = Modifier.padding(16.dp)) {
                 item { SectionHeader("AKUN & KEUANGAN") }
-                item { ProfileMenuItem("Kelola Akun", "3 akun terdaftar", Icons.Outlined.AccountBalance) { navController.navigate("accounts") } }
+                item { ProfileMenuItem("Kelola Akun", "3 akun terdaftar", Icons.Outlined.AccountBalance) { navController.navigate("add_account") } }
+
+                item { SectionHeader("KOMUNITAS") }
+                item { ProfileMenuItem("Postingan", "Lihat postingan terbaru", Icons.Outlined.Article) { navController.navigate("postingan") } }
 
                 item { SectionHeader("PENGATURAN") }
-                item { ProfileMenuItem("Notifikasi", "Atur pemberitahuan", Icons.Outlined.Notifications) { navController.navigate("notifications") } }
+                item { ProfileMenuItem("Notifikasi", "Atur pemberitahuan", Icons.Outlined.Notifications) { navController.navigate("notifikasi") } }
 
                 item { SectionHeader("TENTANG") }
-                item { ProfileMenuItem("Tentang NOWA", "v1.0.0 • Universitas Lampung", Icons.Outlined.Info) { navController.navigate("about") } }
+                item { ProfileMenuItem("Tentang NOWA", "v1.0.0 • Universitas Lampung", Icons.Outlined.Info) { navController.navigate("tentang") } }
 
                 item { Spacer(modifier = Modifier.height(24.dp)) }
                 item {
@@ -91,6 +96,38 @@ fun ProfilScreen(navController: NavHostController) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ProfileMenuItem(title: String, subtitle: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = White),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .background(BackgroundGray, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = null, tint = DarkBlue, modifier = Modifier.size(20.dp))
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, fontWeight = FontWeight.Bold, color = TextBlack)
+                Text(subtitle, fontSize = 12.sp, color = TextGray)
+            }
+            Icon(androidx.compose.material.icons.Icons.Outlined.ChevronRight, contentDescription = null, tint = TextGray)
         }
     }
 }

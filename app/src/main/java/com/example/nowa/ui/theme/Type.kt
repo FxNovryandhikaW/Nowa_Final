@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.ui.theme
+package com.example.nowa.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

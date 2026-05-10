@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.data.remote
+package com.example.nowa.data.remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

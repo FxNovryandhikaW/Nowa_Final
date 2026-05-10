@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.component
+package com.example.nowa.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.kelompok_nokonteks_tam_nowa.ui.theme.*
+import com.example.nowa.ui.theme.*
 
 data class Transaction(
     val name: String,

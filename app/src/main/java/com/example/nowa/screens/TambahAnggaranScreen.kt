@@ -1,4 +1,4 @@
-package com.example.kelompok_nokonteks_tam_nowa.screens
+package com.example.nowa.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.kelompok_nokonteks_tam_nowa.ui.theme.*
+import com.example.nowa.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
