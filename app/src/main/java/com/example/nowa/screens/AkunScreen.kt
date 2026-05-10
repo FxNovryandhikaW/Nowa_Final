@@ -20,21 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
-
-data class AccountData(
-    val name: String,
-    val type: String,
-    val balance: String,
-    val emoji: String,
-    val detail: String = ""
-)
-
-val globalAccounts = mutableStateListOf(
-    AccountData("Kas / Tunai", "Cash", "Rp550.000", "💵"),
-    AccountData("BRI Tabungan", "Bank Account", "Rp2.900.000", "🏦"),
-    AccountData("GoPay", "E-Wallet", "Rp200.000", "💳")
-)
 
 @Composable
 fun AkunScreen(navController: NavHostController) {

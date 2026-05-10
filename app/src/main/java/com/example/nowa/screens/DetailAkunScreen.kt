@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.component.Transaction
 import com.example.nowa.component.TransactionItem
+import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
 
 @Composable

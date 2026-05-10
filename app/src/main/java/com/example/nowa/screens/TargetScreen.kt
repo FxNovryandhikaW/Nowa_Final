@@ -18,39 +18,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.component.BudgetCard
 import com.example.nowa.component.GoalCard
+import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
-
-data class GoalData(
-    val name: String,
-    val targetAmount: String,
-    val savedAmount: String,
-    val remainingAmount: String,
-    val progress: Float,
-    val percentage: String,
-    val emoji: String
-)
-
-data class BudgetData(
-    val name: String,
-    val spentAmount: String,
-    val totalAmount: String,
-    val progress: Float,
-    val usageText: String,
-    val remainingText: String,
-    val color: androidx.compose.ui.graphics.Color,
-    val emoji: String
-)
-
-val globalGoals = mutableStateListOf(
-    GoalData("Dana Darurat", "Rp6.000.000", "Rp3.480.000", "Rp2.520.000", 0.58f, "58%", "🏠"),
-    GoalData("Liburan Bali", "Rp2.000.000", "Rp660.000", "Des 2026", 0.33f, "33%", "✈️")
-)
-
-val globalBudgets = mutableStateListOf(
-    BudgetData("Makanan & Minum", "Rp420.000", "Rp600.000", 0.7f, "70% terpakai", "Sisa Rp180.000", DarkBlue, "🍔"),
-    BudgetData("Transportasi", "Rp120.000", "Rp300.000", 0.4f, "40% terpakai", "Sisa Rp180.000", GreenIncome, "🚌"),
-    BudgetData("Hiburan", "Rp195.000", "Rp150.000", 1.0f, "⚠️ Melebihi batas!", "+Rp45.000", RedExpense, "🎮")
-)
 
 @Composable
 fun TargetScreen(navController: NavHostController) {

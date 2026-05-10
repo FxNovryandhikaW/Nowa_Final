@@ -59,11 +59,11 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                         Text("KitaPastiBisa 👋", color = White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
                     Row {
-                        IconButton(onClick = { navController.navigate("profil") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
+                        IconButton(onClick = { navController.navigate("profile") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
                             Icon(Icons.Default.Person, contentDescription = "Profile", tint = White)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(onClick = { navController.navigate("notifikasi") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
+                        IconButton(onClick = { navController.navigate("notifications") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
                             Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = NowaSecondary)
                         }
                     }
@@ -107,7 +107,7 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         LinearProgressIndicator(
-                            progress = 0.72f,
+                            progress = { 0.72f },
                             modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
                             color = NowaSecondary,
                             trackColor = White.copy(alpha = 0.2f)
@@ -133,7 +133,7 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                     MenuIcon("Akun", Icons.Default.AccountBalance, Color(0xFFE8EAF6)) { navController.navigate("accounts") }
                     MenuIcon("Riwayat", Icons.Default.Assignment, Color(0xFFFFF3E0)) { navController.navigate("history") }
                     MenuIcon("Goals", Icons.Default.TrackChanges, Color(0xFFFCE4EC)) { navController.navigate("goals") }
-                    MenuIcon("Profil", Icons.Default.Person, Color(0xFFE0F2F1)) { navController.navigate("profil") }
+                    MenuIcon("Profil", Icons.Default.Person, Color(0xFFE0F2F1)) { navController.navigate("profile") }
                 }
             }
             item { Spacer(modifier = Modifier.height(16.dp)) }
