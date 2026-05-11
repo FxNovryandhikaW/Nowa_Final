@@ -33,11 +33,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.nowa.ui.theme.NowaLightBlue
 
 val NowaPrimary = Color(0xFF4840A3)
 val NowaSecondary = Color(0xFFF9CD6A)
 val NowaBackground = Color(0xFFD8EFF7)
-val NowaLightBlue = Color(0xFF9CBBFC)
+
 
 val dummyEmail = "muthia@nowa.com"
 val dummyPassword = "nowa123"

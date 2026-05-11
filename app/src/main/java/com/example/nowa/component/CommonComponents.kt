@@ -34,8 +34,12 @@ data class Transaction(
 )
 
 val recentTransactions = mutableStateListOf(
-    Transaction("Gaji Bulan April", "Pemasukan · Gaji", "+Rp3.200.000", GreenIncome, "💰"),
-    Transaction("Makan Siang", "Pengeluaran · Makanan", "-Rp45.000", RedExpense, "🍔")
+    Transaction("Gaji Bulan April", "Pemasukan · Gaji", "+Rp3.200.000", GreenIncome, "💰", "09:00"),
+    Transaction("Makan Siang", "Pengeluaran · Makanan", "-Rp45.000", RedExpense, "🍔", "12:30"),
+    Transaction("Transportasi", "Pengeluaran · Transport", "-Rp25.000", RedExpense, "🚚", "07:15"),
+    Transaction("Pulsa & Data", "Pengeluaran · Utilities", "-Rp80.000", RedExpense, "📱", "19:00"),
+    Transaction("Kopi & Snack", "Pengeluaran · Makanan", "-Rp38.000", RedExpense, "☕", "10:20"),
+    Transaction("Freelance Design", "Pemasukan · Sampingan", "+Rp350.000", GreenIncome, "🎓", "15:00")
 )
 
 @Composable
@@ -134,30 +138,71 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    NavigationBar(
-        containerColor = White,
-        modifier = Modifier.clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+    Surface(
+        color = White,
+        tonalElevation = 8.dp,
+        shadowElevation = 16.dp,
+        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
-        NavigationBarItem(
-            selected = currentRoute == "home",
-            onClick = { navController.navigate("home") },
-            icon = { Icon(Icons.Default.Home, contentDescription = null) },
-            label = { Text("HOME", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-            colors = NavigationBarItemDefaults.colors(selectedIconColor = DarkBlue, unselectedIconColor = TextGray, selectedTextColor = DarkBlue, indicatorColor = Color.Transparent)
-        )
-        NavigationBarItem(
-            selected = currentRoute == "history",
-            onClick = { navController.navigate("history") },
-            icon = { Icon(Icons.Default.BarChart, contentDescription = null) },
-            label = { Text("RIWAYAT", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-            colors = NavigationBarItemDefaults.colors(selectedIconColor = DarkBlue, unselectedIconColor = TextGray, selectedTextColor = DarkBlue, indicatorColor = Color.Transparent)
-        )
-        NavigationBarItem(
-            selected = currentRoute == "goals",
-            onClick = { navController.navigate("goals") },
-            icon = { Icon(Icons.Default.TrackChanges, contentDescription = null) },
-            label = { Text("GOALS", fontSize = 10.sp, fontWeight = FontWeight.Bold) },
-            colors = NavigationBarItemDefaults.colors(selectedIconColor = DarkBlue, unselectedIconColor = TextGray, selectedTextColor = DarkBlue, indicatorColor = Color.Transparent)
-        )
+        NavigationBar(
+            containerColor = Color.Transparent,
+            tonalElevation = 0.dp,
+            modifier = Modifier.height(80.dp)
+        ) {
+            NavigationBarItem(
+                selected = currentRoute == "home",
+                onClick = { 
+                    if (currentRoute != "home") {
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    }
+                },
+                icon = { Icon(Icons.Default.Home, contentDescription = null, modifier = Modifier.size(26.dp)) },
+                label = { Text("HOME", fontSize = 10.sp, fontWeight = FontWeight.Black) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = NowaPrimary,
+                    unselectedIconColor = TextGray.copy(alpha = 0.5f),
+                    selectedTextColor = NowaPrimary,
+                    unselectedTextColor = TextGray.copy(alpha = 0.5f),
+                    indicatorColor = NowaPrimary.copy(alpha = 0.1f)
+                )
+            )
+            NavigationBarItem(
+                selected = currentRoute == "history",
+                onClick = { 
+                    if (currentRoute != "history") {
+                        navController.navigate("history")
+                    }
+                },
+                icon = { Icon(Icons.Default.BarChart, contentDescription = null, modifier = Modifier.size(26.dp)) },
+                label = { Text("RIWAYAT", fontSize = 10.sp, fontWeight = FontWeight.Black) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = NowaPrimary,
+                    unselectedIconColor = TextGray.copy(alpha = 0.5f),
+                    selectedTextColor = NowaPrimary,
+                    unselectedTextColor = TextGray.copy(alpha = 0.5f),
+                    indicatorColor = NowaPrimary.copy(alpha = 0.1f)
+                )
+            )
+            NavigationBarItem(
+                selected = currentRoute == "goals",
+                onClick = { 
+                    if (currentRoute != "goals") {
+                        navController.navigate("goals")
+                    }
+                },
+                icon = { Icon(Icons.Default.TrackChanges, contentDescription = null, modifier = Modifier.size(26.dp)) },
+                label = { Text("GOALS", fontSize = 10.sp, fontWeight = FontWeight.Black) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = NowaPrimary,
+                    unselectedIconColor = TextGray.copy(alpha = 0.5f),
+                    selectedTextColor = NowaPrimary,
+                    unselectedTextColor = TextGray.copy(alpha = 0.5f),
+                    indicatorColor = NowaPrimary.copy(alpha = 0.1f)
+                )
+            )
+        }
     }
 }

@@ -26,57 +26,70 @@ fun TargetScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue)
+            .background(NowaPrimaryDark)
     ) {
-        Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
+        Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 60.dp, bottom = 24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Goals & Budget", color = White, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(Icons.Default.TrackChanges, contentDescription = null, tint = Pink40, modifier = Modifier.size(32.dp))
+                Text("Goals & Budget", color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("🎯", fontSize = 24.sp)
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Rencanakan masa depan finansialmu", color = White.copy(alpha = 0.7f), fontSize = 14.sp)
         }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = BackgroundGray,
+            color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(modifier = Modifier.padding(16.dp)) {
+            LazyColumn(
+                modifier = Modifier.padding(16.dp),
+                contentPadding = PaddingValues(bottom = 24.dp)
+            ) {
                 item {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text("Target Tabungan", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Target Tabungan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
                         Text(
                             "+ Tambah",
-                            color = DarkBlue,
+                            color = NowaPrimary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable { navController.navigate("add_goal") }
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.height(12.dp)) }
                 items(globalGoals) { goal ->
                     GoalCard(goal.name, goal.targetAmount, goal.savedAmount, goal.remainingAmount, goal.progress, goal.percentage, goal.emoji)
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                item { Spacer(modifier = Modifier.height(12.dp)) }
                 item {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text("Budget Bulanan", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Budget Bulanan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
                         Text(
                             "+ Tambah",
-                            color = DarkBlue,
+                            color = NowaPrimary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.clickable { navController.navigate("add_budget") }
                         )
                     }
                 }
-                item { Spacer(modifier = Modifier.height(12.dp)) }
                 items(globalBudgets) { budget ->
                     BudgetCard(budget.name, budget.spentAmount, budget.totalAmount, budget.progress, budget.usageText, budget.remainingText, budget.color, budget.emoji)
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -16,12 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.nowa.ui.theme.NowaLightBlue
+
 import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
 
 @Composable
-fun EditAkunScreen(navController: NavHostController) {
-    val currentAccount = remember { globalAccounts.find { it.type == "Cash" } }
+fun EditAkunScreen(navController: NavHostController, initialAccountName: String) {
+    val currentAccount = remember { globalAccounts.find { it.name == initialAccountName } }
     
     var accountName by remember { mutableStateOf(currentAccount?.name ?: "Kas / Tunai") }
     var accountType by remember { mutableStateOf(currentAccount?.type ?: "Cash") }
@@ -35,6 +39,7 @@ fun EditAkunScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(DarkBlue)
+            .statusBarsPadding()
     ) {
         Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
             Row(
@@ -54,7 +59,7 @@ fun EditAkunScreen(navController: NavHostController) {
                 }
                 IconButton(
                     onClick = {
-                        globalAccounts.removeAll { it.type == "Cash" }
+                        globalAccounts.removeAll { it.name == (currentAccount?.name ?: "") }
                         navController.popBackStack()
                     },
                     modifier = Modifier.background(RedExpense.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
@@ -69,7 +74,13 @@ fun EditAkunScreen(navController: NavHostController) {
             color = White,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            Column(modifier = Modifier.padding(24.dp).fillMaxWidth()) {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+            ) {
                 Text("NAMA AKUN", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
                 OutlinedTextField(
                     value = accountName,
@@ -152,10 +163,10 @@ fun EditAkunScreen(navController: NavHostController) {
                     )
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
-                        val index = globalAccounts.indexOfFirst { it.type == "Cash" }
+                        val index = globalAccounts.indexOfFirst { it.name == (currentAccount?.name ?: "Kas / Tunai") }
                         if (index != -1) {
                             val emoji = when (accountType) {
                                 "Bank" -> "🏦"
@@ -177,6 +188,7 @@ fun EditAkunScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("💾 ", fontSize = 16.sp)
                         Text("Simpan Perubahan", fontWeight = FontWeight.Bold)
                     }
                 }

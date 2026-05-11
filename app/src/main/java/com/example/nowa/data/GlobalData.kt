@@ -34,8 +34,8 @@ data class BudgetData(
 )
 
 val globalAccounts = mutableStateListOf(
-    AccountData("Kas / Tunai", "Cash", "Rp550.000", "💵"),
-    AccountData("BRI Tabungan", "Bank Account", "Rp2.900.000", "🏦"),
+    AccountData("Kas Tunai", "Cash", "Rp550.000", "💵"),
+    AccountData("BRI Tabungan", "Bank", "Rp2.900.000", "🏦"),
     AccountData("GoPay", "E-Wallet", "Rp200.000", "💳")
 )
 

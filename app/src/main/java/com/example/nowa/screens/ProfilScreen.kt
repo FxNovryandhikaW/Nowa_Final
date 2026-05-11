@@ -1,6 +1,7 @@
 package com.example.nowa.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,69 +31,73 @@ fun ProfilScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue)
+            .background(NowaPrimaryDark)
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
-                .padding(top = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = { navController.popBackStack() },
-                modifier = Modifier.background(White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-            ) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = White)
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Text("Profil Pengguna", color = White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        }
-
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+                .padding(horizontal = 24.dp, vertical = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.mipmap.ic_launcher),
-                contentDescription = "Profile Picture",
+            Box(
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("KitaPastiBisa", color = White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text("KitaPastiBisa@gmail.com", color = White.copy(alpha = 0.7f), fontSize = 12.sp)
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(NowaSecondary),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("R", fontSize = 48.sp, fontWeight = FontWeight.Black, color = NowaPrimaryDark)
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Text("Reggy Desvita", color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+            Text("2417051016@students.unila.ac.id", color = White.copy(alpha = 0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium)
         }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = BackgroundGray,
+            color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(modifier = Modifier.padding(16.dp)) {
+            LazyColumn(
+                modifier = Modifier.padding(16.dp),
+                contentPadding = PaddingValues(bottom = 32.dp)
+            ) {
                 item { SectionHeader("AKUN & KEUANGAN") }
-                item { ProfileMenuItem("Kelola Akun", "3 akun terdaftar", Icons.Outlined.AccountBalance) { navController.navigate("add_account") } }
-
-                item { SectionHeader("KOMUNITAS") }
-                item { ProfileMenuItem("Postingan", "Lihat postingan terbaru", Icons.Outlined.Article) { navController.navigate("postingan") } }
+                item { ProfileMenuItem("Kelola Akun", "3 akun terdaftar", Icons.Outlined.AccountBalance) { navController.navigate("accounts") } }
+                item { ProfileMenuItem("Laporan Keuangan", "Ringkasan bulanan", Icons.Outlined.BarChart) { } }
 
                 item { SectionHeader("PENGATURAN") }
-                item { ProfileMenuItem("Notifikasi", "Atur pemberitahuan", Icons.Outlined.Notifications) { navController.navigate("notifikasi") } }
+                item { ProfileMenuItem("Notifikasi", "Aktif", Icons.Outlined.Notifications) { navController.navigate("notifications") } }
+                item { ProfileMenuItem("Keamanan & Privasi", "Enkripsi lokal aktif", Icons.Outlined.Lock) { } }
+                item { ProfileMenuItem("Bahasa", "Bahasa Indonesia", Icons.Outlined.Public) { } }
 
                 item { SectionHeader("TENTANG") }
-                item { ProfileMenuItem("Tentang NOWA", "v1.0.0 • Universitas Lampung", Icons.Outlined.Info) { navController.navigate("tentang") } }
+                item { ProfileMenuItem("Tentang NOWA", "v1.0.0 · Universitas Lampung", Icons.Outlined.Info) { navController.navigate("about") } }
 
                 item { Spacer(modifier = Modifier.height(24.dp)) }
                 item {
                     Button(
                         onClick = { navController.navigate("splash") { popUpTo(0) } },
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        modifier = Modifier.fillMaxWidth().height(60.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = RedExpense.copy(alpha = 0.1f)),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, RedExpense.copy(alpha = 0.2f))
                     ) {
-                        Text("🚪 Keluar dari Akun", color = RedExpense, fontWeight = FontWeight.Bold)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("📕 ", fontSize = 16.sp)
+                            Text("Keluar dari Akun", color = RedExpense, fontWeight = FontWeight.Black, fontSize = 16.sp)
+                        }
+                    }
+                }
+                item {
+                    Box(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), contentAlignment = Alignment.Center) {
+                        Text(
+                            "← Kembali ke Dashboard",
+                            color = NowaPrimaryDark.copy(alpha = 0.6f),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.clickable { navController.popBackStack() }
+                        )
                     }
                 }
             }

@@ -22,30 +22,55 @@ import com.example.nowa.component.recentTransactions
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.*
 
+import androidx.compose.foundation.lazy.LazyRow
+import com.example.nowa.component.FilterChip
+
 @Composable
 fun RiwayatScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue)
+            .background(NowaPrimaryDark)
     ) {
-        Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
+        Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 60.dp, bottom = 24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Riwayat Transaksi", color = White, fontSize = 28.sp, fontWeight = FontWeight.ExtraBold)
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(Icons.Default.BarChart, contentDescription = null, tint = White, modifier = Modifier.size(32.dp))
+                Text("Riwayat Transaksi", color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("📊", fontSize = 24.sp)
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Text("Semua catatan pemasukan & pengeluaran", color = White.copy(alpha = 0.7f), fontSize = 14.sp)
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            LazyRow {
+                item { FilterChip(true, "Semua") }
+                item { FilterChip(false, "Pemasukan") }
+                item { FilterChip(false, "Pengeluaran") }
+                item { FilterChip(false, "Makanan") }
+            }
         }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = BackgroundGray,
+            color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(modifier = Modifier.padding(horizontal = 16.dp)) {
-                item { SectionHeader("SEMUA TRANSAKSI") }
-                items(recentTransactions) { transaction ->
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                contentPadding = PaddingValues(bottom = 80.dp)
+            ) {
+                item { SectionHeader("HARI INI · 23 APRIL 2026") }
+                items(recentTransactions.take(1)) { transaction ->
+                    TransactionItem(transaction)
+                }
+                
+                item { SectionHeader("KEMARIN · 22 APRIL") }
+                items(recentTransactions.subList(1, 4)) { transaction ->
+                    TransactionItem(transaction)
+                }
+                
+                item { SectionHeader("21 APRIL 2026") }
+                items(recentTransactions.subList(4, 6)) { transaction ->
                     TransactionItem(transaction)
                 }
             }

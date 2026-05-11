@@ -12,15 +12,20 @@ val Pink40 = Color(0xFF7D5260)
 
 // NOWA Colors
 val NowaPrimary = Color(0xFF4840A3)
+val NowaPrimaryDark = Color(0xFF2D2675)
 val NowaSecondary = Color(0xFFF9CD6A)
-val NowaBackground = Color(0xFFD8EFF7)
-val NowaLightBlue = Color(0xFF9CBBFC)
+val NowaBackground = Color(0xFFF0F2FA)
+val NowaDarkBackground = Color(0xFF191449)
 
 // Profile & Component Colors
-val DarkBlue = Color(0xFF0D1B3E)
+val DarkBlue = Color(0xFF2D2675)
 val White = Color(0xFFFFFFFF)
 val BackgroundGray = Color(0xFFF5F7FA)
 val TextBlack = Color(0xFF1A1A1A)
 val TextGray = Color(0xFF9E9E9E)
 val GreenIncome = Color(0xFF4CAF50)
 val RedExpense = Color(0xFFE53935)
+val CardBackground = Color(0xFFFFFFFF)
+
+val NowaLightBlue = Color(0xFF9CBBFC)
+

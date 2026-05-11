@@ -3,6 +3,7 @@ package com.example.nowa.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,65 +31,76 @@ fun TambahTransaksiScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue)
+            .background(NowaPrimaryDark.copy(alpha = 0.5f))
     ) {
-        Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.background(White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = White)
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Text("Tambah Transaksi", color = White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            }
-        }
-
+        Spacer(modifier = Modifier.weight(1f))
         Surface(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             color = White,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
             Column(modifier = Modifier.padding(24.dp).fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(4.dp)
+                        .clip(CircleShape)
+                        .background(TextGray.copy(alpha = 0.3f))
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    "Tambah Transaksi",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    color = NowaPrimaryDark,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(BackgroundGray)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(NowaBackground)
                         .padding(4.dp)
                 ) {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (isPemasukan) GreenIncome else Color.Transparent)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (isPemasukan) Color(0xFF52B68C) else Color.Transparent)
                             .clickable { isPemasukan = true }
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "🍏 Pemasukan",
-                            color = if (isPemasukan) White else TextGray,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🍏 ", fontSize = 14.sp)
+                            Text(
+                                text = "Pemasukan",
+                                color = if (isPemasukan) White else TextGray,
+                                fontWeight = FontWeight.Black,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(if (!isPemasukan) RedExpense else Color.Transparent)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (!isPemasukan) Color(0xFFE57373) else Color.Transparent)
                             .clickable { isPemasukan = false }
                             .padding(vertical = 12.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "❤️ Pengeluaran",
-                            color = if (!isPemasukan) White else TextGray,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("❤️ ", fontSize = 14.sp)
+                            Text(
+                                text = "Pengeluaran",
+                                color = if (!isPemasukan) White else TextGray,
+                                fontWeight = FontWeight.Black,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 }
 
@@ -96,55 +108,62 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                 Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "Rp ${if (nominal.isEmpty()) "0" else nominal}",
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = DarkBlue
+                        fontSize = 42.sp,
+                        fontWeight = FontWeight.Black,
+                        color = NowaPrimaryDark
                     )
                 }
+                Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(NowaBackground))
 
-                Spacer(modifier = Modifier.height(32.dp))
-                Text("NOMINAL (IDR)", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
+                Spacer(modifier = Modifier.height(24.dp))
+                Text("NOMINAL (IDR)", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
                 OutlinedTextField(
                     value = nominal,
-                    onValueChange = { nominal = it },
+                    onValueChange = { if (it.all { char -> char.isDigit() }) nominal = it },
                     placeholder = { Text("0", color = TextGray.copy(alpha = 0.5f)) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f)
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
                     )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("KETERANGAN", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
+                Text("KETERANGAN", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
                 OutlinedTextField(
                     value = keterangan,
                     onValueChange = { keterangan = it },
                     placeholder = { Text("mis. Makan siang, Gaji...", color = TextGray.copy(alpha = 0.5f)) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f)
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
                     )
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("KATEGORI", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
+                Text("KATEGORI", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
                 OutlinedTextField(
                     value = kategori,
                     onValueChange = { kategori = it },
                     placeholder = { Text("Makanan / Gaji / Transport...", color = TextGray.copy(alpha = 0.5f)) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f)
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
                     )
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
                         if (nominal.isNotEmpty() && keterangan.isNotEmpty()) {
@@ -159,20 +178,21 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                             navController.popBackStack()
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    modifier = Modifier.fillMaxWidth().height(60.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("💾 ", fontSize = 16.sp)
-                        Text("Simpan Transaksi", fontWeight = FontWeight.Bold)
+                        Text("Simpan Transaksi", fontWeight = FontWeight.Black, fontSize = 16.sp)
                     }
                 }
                 TextButton(
                     onClick = { navController.popBackStack() },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                 ) {
-                    Text("Batal", color = TextGray)
+                    Text("Batal", color = TextGray, fontWeight = FontWeight.Bold)
                 }
             }
         }
