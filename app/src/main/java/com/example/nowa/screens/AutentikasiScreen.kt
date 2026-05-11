@@ -20,62 +20,86 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.*
 
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.geometry.Offset
+
 val registeredUsers = mutableListOf(
     Pair("muthia@nowa.com", "nowa123")
 )
 
 @Composable
 fun SplashSkrin(navController: NavHostController) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(NowaPrimaryDark, NowaDarkBackground)
+                )
+            ),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(24.dp))
-                .background(NowaSecondary),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(NowaSecondary),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "N",
+                    fontSize = 60.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = NowaPrimaryDark
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
             Text(
-                text = "N",
+                text = "NOWA",
                 fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = DarkBlue
+                fontWeight = FontWeight.Black,
+                color = White,
+                letterSpacing = 6.sp,
+                style = TextStyle(
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 0.3f),
+                        offset = Offset(0f, 4f),
+                        blurRadius = 8f
+                    )
+                )
             )
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "NOWA",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = White,
-            letterSpacing = 4.sp
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Notes Walet · Financial Health Check",
-            fontSize = 14.sp,
-            color = White.copy(alpha = 0.7f)
-        )
-        Spacer(modifier = Modifier.height(60.dp))
-        Button(
-            onClick = { navController.navigate("login") },
-            colors = ButtonDefaults.buttonColors(containerColor = NowaSecondary),
-            shape = RoundedCornerShape(32.dp),
-            modifier = Modifier
-                .height(56.dp)
-                .width(200.dp)
-        ) {
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = "Mulai →",
-                color = DarkBlue,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                text = "Notes Walet - Financial Health Check",
+                fontSize = 14.sp,
+                color = White.copy(alpha = 0.7f),
+                fontWeight = FontWeight.Medium
             )
+            Spacer(modifier = Modifier.height(80.dp))
+            Button(
+                onClick = { navController.navigate("login") },
+                colors = ButtonDefaults.buttonColors(containerColor = NowaSecondary),
+                shape = RoundedCornerShape(32.dp),
+                modifier = Modifier
+                    .height(64.dp)
+                    .width(220.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 8.dp)
+            ) {
+                Text(
+                    text = "Mulai →",
+                    color = NowaPrimaryDark,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
@@ -91,45 +115,58 @@ fun MasukScreen(navController: NavHostController) {
             .fillMaxSize()
             .background(NowaBackground)
     ) {
+        // Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                .background(NowaPrimary)
-                .padding(start = 32.dp, end = 32.dp, top = 56.dp, bottom = 36.dp)
+                .clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(NowaPrimaryDark, NowaPrimary)
+                    )
+                )
+                .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 48.dp)
         ) {
             Column {
-                Text(
-                    text = "Selamat\nDatang 👋",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    lineHeight = 40.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Selamat\nDatang",
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        lineHeight = 42.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "👋", fontSize = 32.sp)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = "Masuk ke akun NOWA kamu",
                     fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        // Tab Switcher
         Row(
             modifier = Modifier
                 .padding(horizontal = 32.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .height(56.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(Color.White)
                 .padding(4.dp)
         ) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(NowaPrimary)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(NowaPrimaryDark)
                     .padding(vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -143,7 +180,8 @@ fun MasukScreen(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(12.dp))
                     .background(Color.Transparent)
                     .clickable { navController.navigate("register") }
                     .padding(vertical = 12.dp),
@@ -158,51 +196,64 @@ fun MasukScreen(navController: NavHostController) {
             }
         }
 
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        // Form
         Column(modifier = Modifier.padding(horizontal = 32.dp)) {
             Text(
                 text = "EMAIL",
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Gray,
+                color = TextGray,
                 letterSpacing = 1.sp
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 placeholder = { Text("nama@email.com", color = Color.LightGray) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                    .background(Color.White, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = NowaPrimary
+                )
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "PASSWORD",
-                fontSize = 11.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Gray,
+                color = TextGray,
                 letterSpacing = 1.sp
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
+                placeholder = { Text("********", color = Color.LightGray) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
+                    .background(Color.White, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = NowaPrimary
+                )
             )
+            
             if (pesanError.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(text = pesanError, color = Color.Red, fontSize = 12.sp)
             }
-            Spacer(modifier = Modifier.height(28.dp))
+            
+            Spacer(modifier = Modifier.height(40.dp))
+            
             Button(
                 onClick = {
                     if (email.isEmpty() || password.isEmpty()) {
@@ -218,13 +269,18 @@ fun MasukScreen(navController: NavHostController) {
                         pesanError = "Email atau password salah"
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Text("Masuk Sekarang", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Masuk Sekarang", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
                     text = buildAnnotatedString {
@@ -233,7 +289,7 @@ fun MasukScreen(navController: NavHostController) {
                             append("Daftar di sini")
                         }
                     },
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     modifier = Modifier.clickable { navController.navigate("register") }
                 )
             }
@@ -246,7 +302,6 @@ fun DaftarScreen(navController: NavHostController) {
     var nama by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var konfirmasi by remember { mutableStateOf("") }
     var pesanError by remember { mutableStateOf("") }
 
     Column(
@@ -254,44 +309,57 @@ fun DaftarScreen(navController: NavHostController) {
             .fillMaxSize()
             .background(NowaBackground)
     ) {
+        // Header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-                .background(NowaPrimary)
-                .padding(start = 32.dp, end = 32.dp, top = 56.dp, bottom = 36.dp)
+                .clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(NowaPrimaryDark, NowaPrimary)
+                    )
+                )
+                .padding(start = 32.dp, end = 32.dp, top = 64.dp, bottom = 48.dp)
         ) {
             Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Buat Akun",
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        lineHeight = 42.sp
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(text = "🚀", fontSize = 32.sp)
+                }
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "Buat Akun\nBaru 📝",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    lineHeight = 40.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Mulai perjalanan finansialmu bersama NOWA",
+                    text = "Mulai perjalanan finansial sehatmu",
                     fontSize = 14.sp,
-                    color = Color.White.copy(alpha = 0.8f)
+                    color = Color.White.copy(alpha = 0.8f),
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        // Tab Switcher
         Row(
             modifier = Modifier
                 .padding(horizontal = 32.dp)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .height(56.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(Color.White)
                 .padding(4.dp)
         ) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(12.dp))
                     .background(Color.Transparent)
                     .clickable { navController.navigate("login") }
                     .padding(vertical = 12.dp),
@@ -307,8 +375,9 @@ fun DaftarScreen(navController: NavHostController) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(NowaPrimary)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(NowaPrimaryDark)
                     .padding(vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -323,63 +392,69 @@ fun DaftarScreen(navController: NavHostController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Column(modifier = Modifier.padding(horizontal = 32.dp)) {
-            Text("NAMA LENGKAP", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray, letterSpacing = 1.sp)
-            Spacer(modifier = Modifier.height(6.dp))
+        // Form
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 32.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text("NAMA LENGKAP", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextGray, letterSpacing = 1.sp)
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = nama,
                 onValueChange = { nama = it },
                 placeholder = { Text("Nama kamu", color = Color.LightGray) },
-                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = NowaPrimary
+                )
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text("EMAIL", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray, letterSpacing = 1.sp)
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("EMAIL", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextGray, letterSpacing = 1.sp)
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
                 placeholder = { Text("nama@email.com", color = Color.LightGray) },
-                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = NowaPrimary
+                )
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text("PASSWORD", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray, letterSpacing = 1.sp)
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("PASSWORD", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = TextGray, letterSpacing = 1.sp)
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
+                placeholder = { Text("Min. 8 karakter", color = Color.LightGray) },
+                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(16.dp)),
+                shape = RoundedCornerShape(16.dp),
                 singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = NowaPrimary
+                )
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text("KONFIRMASI PASSWORD", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = Color.Gray, letterSpacing = 1.sp)
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = konfirmasi,
-                onValueChange = { konfirmasi = it },
-                modifier = Modifier.fillMaxWidth().background(Color.White, RoundedCornerShape(12.dp)),
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true,
-                visualTransformation = PasswordVisualTransformation()
-            )
+            
             if (pesanError.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(text = pesanError, color = Color.Red, fontSize = 12.sp)
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            
+            Spacer(modifier = Modifier.height(32.dp))
+            
             Button(
                 onClick = {
                     if (nama.isEmpty() || email.isEmpty() || password.isEmpty()) {
                         pesanError = "Semua kolom harus diisi"
-                        return@Button
-                    }
-                    if (password != konfirmasi) {
-                        pesanError = "Password tidak cocok"
                         return@Button
                     }
                     val sudahAda = registeredUsers.any { it.first == email }
@@ -390,13 +465,16 @@ fun DaftarScreen(navController: NavHostController) {
                         navController.navigate("login")
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier.fillMaxWidth().height(60.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(16.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
             ) {
-                Text("Daftar Sekarang", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text("Buat Akun", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            
+            Spacer(modifier = Modifier.height(20.dp))
+            
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
                     text = buildAnnotatedString {
@@ -405,10 +483,11 @@ fun DaftarScreen(navController: NavHostController) {
                             append("Masuk di sini")
                         }
                     },
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     modifier = Modifier.clickable { navController.navigate("login") }
                 )
             }
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }

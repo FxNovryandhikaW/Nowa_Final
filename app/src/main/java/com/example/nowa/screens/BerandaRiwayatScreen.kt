@@ -1,5 +1,10 @@
 package com.example.nowa.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -39,14 +44,18 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundGray)
+            .background(NowaBackground)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(DarkBlue)
-                .padding(24.dp)
-                .padding(top = 24.dp)
+                .clip(RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(NowaPrimaryDark, NowaPrimary)
+                    )
+                )
+                .padding(start = 24.dp, end = 24.dp, top = 60.dp, bottom = 32.dp)
         ) {
             Column {
                 Row(
@@ -56,61 +65,85 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                 ) {
                     Column {
                         Text("Halo,", color = White.copy(alpha = 0.7f), fontSize = 14.sp)
-                        Text("KitaPastiBisa 👋", color = White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Reggy Desvita", color = White, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("👋", fontSize = 20.sp)
+                        }
                     }
                     Row {
-                        IconButton(onClick = { navController.navigate("profile") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
-                            Icon(Icons.Default.Person, contentDescription = "Profile", tint = White)
+                        IconButton(
+                            onClick = { navController.navigate("profile") },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+                        ) {
+                            Icon(Icons.Default.Person, contentDescription = "Profile", tint = White, modifier = Modifier.size(20.dp))
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        IconButton(onClick = { navController.navigate("notifications") }, modifier = Modifier.background(White.copy(alpha = 0.1f), CircleShape)) {
-                            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = NowaSecondary)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        IconButton(
+                            onClick = { navController.navigate("notifications") },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+                        ) {
+                            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = NowaSecondary, modifier = Modifier.size(20.dp))
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(28.dp))
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = White.copy(alpha = 0.1f)),
-                    shape = RoundedCornerShape(24.dp)
+                    colors = CardDefaults.cardColors(containerColor = White.copy(alpha = 0.12f)),
+                    shape = RoundedCornerShape(28.dp),
+                    border = BorderStroke(1.dp, White.copy(alpha = 0.1f))
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(20.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Bolt, contentDescription = null, tint = NowaSecondary, modifier = Modifier.size(16.dp))
-                            Text(" FINANCIAL HEALTH SCORE", color = White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Icon(Icons.Default.Bolt, contentDescription = null, tint = NowaSecondary, modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("FINANCIAL HEALTH SCORE", color = White.copy(alpha = 0.9f), fontSize = 11.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
                         }
+                        Spacer(modifier = Modifier.height(12.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("72", fontSize = 48.sp, fontWeight = FontWeight.Bold, color = White)
+                                Text("72", fontSize = 56.sp, fontWeight = FontWeight.Black, color = White)
                                 Surface(
                                     color = NowaSecondary,
-                                    shape = RoundedCornerShape(16.dp)
+                                    shape = RoundedCornerShape(20.dp)
                                 ) {
-                                    Text("Cukup Sehat", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), fontSize = 12.sp, fontWeight = FontWeight.Bold, color = DarkBlue)
+                                    Text(
+                                        "Cukup Sehat",
+                                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Black,
+                                        color = NowaPrimaryDark
+                                    )
                                 }
                             }
-                            Canvas(modifier = Modifier.size(100.dp, 60.dp)) {
+                            Canvas(modifier = Modifier.size(120.dp, 70.dp)) {
                                 val path = Path().apply {
-                                    moveTo(0f, size.height * 0.8f)
-                                    lineTo(size.width * 0.2f, size.height * 0.6f)
-                                    lineTo(size.width * 0.4f, size.height * 0.7f)
-                                    lineTo(size.width * 0.6f, size.height * 0.4f)
-                                    lineTo(size.width * 0.8f, size.height * 0.5f)
-                                    lineTo(size.width, 0f)
+                                    moveTo(0f, size.height * 0.85f)
+                                    lineTo(size.width * 0.2f, size.height * 0.75f)
+                                    lineTo(size.width * 0.4f, size.height * 0.8f)
+                                    lineTo(size.width * 0.6f, size.height * 0.5f)
+                                    lineTo(size.width * 0.8f, size.height * 0.6f)
+                                    lineTo(size.width, size.height * 0.1f)
                                 }
-                                drawPath(path, color = NowaSecondary, style = Stroke(width = 4f))
+                                drawPath(path, color = NowaSecondary, style = Stroke(width = 5f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+                                drawCircle(color = NowaSecondary, radius = 6f, center = Offset(size.width, size.height * 0.1f))
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
                         LinearProgressIndicator(
                             progress = { 0.72f },
-                            modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                            modifier = Modifier.fillMaxWidth().height(10.dp).clip(CircleShape),
                             color = NowaSecondary,
-                            trackColor = White.copy(alpha = 0.2f)
+                            trackColor = White.copy(alpha = 0.15f)
                         )
                     }
                 }
@@ -119,50 +152,112 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
+            contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    SummaryCard("PEMASUKAN", "Rp${String.format("%,d", totalPemasukan).replace(",", ".")}", Icons.Default.Favorite, GreenIncome, Modifier.weight(1f)) {}
-                    SummaryCard("PENGELUARAN", "Rp${String.format("%,d", totalPengeluaran).replace(",", ".")}", Icons.Default.Favorite, RedExpense, Modifier.weight(1f)) {}
-                }
-            }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    MenuIcon("Akun", Icons.Default.AccountBalance, Color(0xFFE8EAF6)) { navController.navigate("accounts") }
-                    MenuIcon("Riwayat", Icons.Default.Assignment, Color(0xFFFFF3E0)) { navController.navigate("history") }
-                    MenuIcon("Goals", Icons.Default.TrackChanges, Color(0xFFFCE4EC)) { navController.navigate("goals") }
-                    MenuIcon("Profil", Icons.Default.Person, Color(0xFFE0F2F1)) { navController.navigate("profile") }
-                }
-            }
-            item { Spacer(modifier = Modifier.height(16.dp)) }
-            item {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4)),
-                    shape = RoundedCornerShape(16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("💡 Saran Keuangan", fontWeight = FontWeight.Bold, color = DarkBlue)
-                        }
-                        Text(
-                            "Pengeluaran makan bulan ini melebihi 30% pendapatan. Batasi hingga Rp500.000 untuk menjaga skor kamu.",
-                            fontSize = 12.sp,
-                            color = TextGray
-                        )
+                    SummaryCard("PEMASUKAN", "Rp3.200.000", Icons.Default.Favorite, GreenIncome, Modifier.weight(1f)) {
+                        navController.navigate("add_transaction")
                     }
+                    SummaryCard("PENGELUARAN", "Rp1.840.000", Icons.Default.Favorite, RedExpense, Modifier.weight(1f)) {
+                        navController.navigate("add_transaction")
+                    }
+                    SummaryCard("AKUN", "3 Akun", Icons.Default.AccountBalance, NowaPrimary, Modifier.weight(1f)) {
+                        navController.navigate("accounts")
+                    }
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = { navController.navigate("add_transaction") },
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = GreenIncome.copy(alpha = 0.15f)),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.dp, GreenIncome.copy(alpha = 0.3f))
+                    ) {
+                        Text("🍏 +Pemasukan", color = GreenIncome, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    }
+                    Button(
+                        onClick = { navController.navigate("add_transaction") },
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = RedExpense.copy(alpha = 0.15f)),
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.dp, RedExpense.copy(alpha = 0.3f))
+                    ) {
+                        Text("❤️ +Pengeluaran", color = RedExpense, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    }
+                }
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    MenuIcon("Akun", Icons.Default.AccountBalance, Color.White) { navController.navigate("accounts") }
+                    MenuIcon("Riwayat", Icons.Default.Assignment, Color.White) { navController.navigate("history") }
+                    MenuIcon("Goals", Icons.Default.TrackChanges, Color.White) { navController.navigate("goals") }
+                    MenuIcon("Profil", Icons.Default.Person, Color.White) { navController.navigate("profile") }
                 }
             }
             item { Spacer(modifier = Modifier.height(24.dp)) }
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Transaksi Terkini", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                    Text("Lihat semua", color = DarkBlue, fontSize = 12.sp, modifier = Modifier.clickable { navController.navigate("history") })
+                Card(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    colors = CardDefaults.cardColors(containerColor = NowaSecondary.copy(alpha = 0.3f)),
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(1.dp, NowaSecondary.copy(alpha = 0.5f))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("💡 Saran Keuangan", fontWeight = FontWeight.Black, color = NowaPrimaryDark, fontSize = 14.sp)
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            "Pengeluaran makan bulan ini melebihi 30% pendapatan. Batasi hingga Rp500.000 untuk menjaga skor kamu.",
+                            fontSize = 12.sp,
+                            color = NowaPrimaryDark.copy(alpha = 0.8f),
+                            lineHeight = 18.sp
+                        )
+                    }
                 }
             }
-            items(recentTransactions) { transaction ->
-                TransactionItem(transaction)
+            item { Spacer(modifier = Modifier.height(28.dp)) }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Transaksi Terkini", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
+                    Text(
+                        "Lihat semua",
+                        color = NowaPrimary,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable { navController.navigate("history") }
+                    )
+                }
+            }
+            item { Spacer(modifier = Modifier.height(12.dp)) }
+            items(recentTransactions.take(5)) { transaction ->
+                Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    TransactionItem(transaction)
+                }
             }
         }
     }

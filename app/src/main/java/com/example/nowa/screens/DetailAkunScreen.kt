@@ -12,8 +12,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import android.net.Uri
+import androidx.compose.foundation.Canvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,80 +30,118 @@ import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
 
 @Composable
-fun DetailAkunScreen(navController: NavHostController) {
-    val cashAccount = globalAccounts.find { it.type == "Cash" }
+fun DetailAkunScreen(navController: NavHostController, accountName: String) {
+    val account = globalAccounts.find { it.name == accountName }
     
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(DarkBlue)
+            .background(NowaPrimaryDark)
+            .statusBarsPadding()
     ) {
-        Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
+        Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 24.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.background(White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))) {
+                IconButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.background(White.copy(alpha = 0.15f), RoundedCornerShape(12.dp))
+                ) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = White)
                 }
-                Text("Detail Akun", color = White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                IconButton(onClick = { navController.navigate("edit_account") }, modifier = Modifier.background(NowaSecondary, RoundedCornerShape(12.dp))) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit", tint = DarkBlue)
+                Text("Detail Akun", color = White, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                IconButton(
+                    onClick = { 
+                        val encodedName = android.net.Uri.encode(account?.name ?: "")
+                        navController.navigate("edit_account?accountName=$encodedName")
+                    },
+                    modifier = Modifier.background(NowaSecondary, RoundedCornerShape(12.dp))
+                ) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit", tint = NowaPrimaryDark)
                 }
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(28.dp))
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = White.copy(alpha = 0.1f)),
-                shape = RoundedCornerShape(24.dp)
+                colors = CardDefaults.cardColors(containerColor = White.copy(alpha = 0.12f)),
+                shape = RoundedCornerShape(28.dp),
+                border = BorderStroke(1.dp, White.copy(alpha = 0.1f))
             ) {
-                Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(56.dp).background(White.copy(alpha = 0.1f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
-                        Text(cashAccount?.emoji ?: "💵", fontSize = 32.sp)
+                Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier.size(64.dp).background(White.copy(alpha = 0.15f), RoundedCornerShape(16.dp)), contentAlignment = Alignment.Center) {
+                        Text(account?.emoji ?: "💵", fontSize = 36.sp)
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
                     Column {
-                        Text(cashAccount?.name ?: "Kas / Tunai", color = White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                        Text("${cashAccount?.type ?: "Cash"} · IDR", color = White.copy(alpha = 0.7f), fontSize = 12.sp)
+                        Text(account?.name ?: "Kas / Tunai", color = White, fontSize = 26.sp, fontWeight = FontWeight.Black)
+                        Text("${account?.type ?: "Cash"} · IDR", color = White.copy(alpha = 0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium)
                     }
                 }
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Saldo Hari Ini", color = White.copy(alpha = 0.7f), fontSize = 12.sp)
-                    Text(cashAccount?.balance ?: "Rp0", color = NowaSecondary, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold)
-                    Text("▼ -18% dari 30 hari lalu", color = RedExpense, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+                    Text("Saldo Hari Ini", color = White.copy(alpha = 0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                    Text(account?.balance ?: "Rp0", color = NowaSecondary, fontSize = 42.sp, fontWeight = FontWeight.Black)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("▼ -18% dari 30 hari lalu", color = Color(0xFFFF8A80), fontSize = 12.sp, fontWeight = FontWeight.Black)
+                    }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = BackgroundGray,
+            color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(modifier = Modifier.padding(16.dp)) {
+            LazyColumn(
+                modifier = Modifier.padding(16.dp),
+                contentPadding = PaddingValues(bottom = 24.dp)
+            ) {
                 item {
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = White), shape = RoundedCornerShape(24.dp)) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("📈 TREN SALDO 30 HARI", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Canvas(modifier = Modifier.fillMaxWidth().height(100.dp)) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = White),
+                        shape = RoundedCornerShape(24.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(20.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("📈 TREN SALDO 30 HARI", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Canvas(modifier = Modifier.fillMaxWidth().height(120.dp)) {
                                 val path = Path().apply {
                                     moveTo(0f, 20f)
-                                    lineTo(size.width * 0.5f, 40f)
-                                    lineTo(size.width, 80f)
+                                    cubicTo(size.width * 0.3f, 20f, size.width * 0.6f, 60f, size.width, size.height * 0.8f)
                                 }
-                                drawPath(path, color = DarkBlue, style = Stroke(width = 4f))
+                                drawPath(path, color = NowaPrimary, style = Stroke(width = 6f, cap = StrokeCap.Round))
+                                
+                                // Gradient below the line
+                                val fillPath = Path().apply {
+                                    addPath(path)
+                                    lineTo(size.width, size.height)
+                                    lineTo(0f, size.height)
+                                    close()
+                                }
+                                drawPath(
+                                    fillPath,
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(NowaPrimary.copy(alpha = 0.15f), Color.Transparent)
+                                    )
+                                )
                             }
+                            Spacer(modifier = Modifier.height(8.dp))
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("24M", fontSize = 10.sp, color = TextGray)
-                                Text("6A", fontSize = 10.sp, color = TextGray)
-                                Text("Hari ini", fontSize = 10.sp, color = TextGray)
+                                Text("24M", fontSize = 10.sp, color = TextGray, fontWeight = FontWeight.Bold)
+                                Text("6A", fontSize = 10.sp, color = TextGray, fontWeight = FontWeight.Bold)
+                                Text("Hari ini", fontSize = 10.sp, color = TextGray, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
                 }
-                item { Spacer(modifier = Modifier.height(24.dp)) }
-                item { Text("Riwayat Akun Ini", fontWeight = FontWeight.Bold, fontSize = 18.sp) }
-                item { Spacer(modifier = Modifier.height(12.dp)) }
-                item { TransactionItem(Transaction("Transfer Keluar", "${cashAccount?.name ?: "Cash"} → Luar Wallet", "-Rp200.000", RedExpense, "↗️", "Kemarin")) }
-                item { TransactionItem(Transaction("Free time", cashAccount?.name ?: "Cash", "+Rp80.000", GreenIncome, "😊", "Kemarin")) }
+                item { Spacer(modifier = Modifier.height(28.dp)) }
+                item { Text("Riwayat Akun Ini", fontWeight = FontWeight.Black, fontSize = 20.sp, color = NowaPrimaryDark) }
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { TransactionItem(Transaction("Transfer Keluar", "${account?.name ?: "Cash"} → Luar Wallet", "-Rp200.000", RedExpense, "↗️", "Kemarin")) }
+                item { TransactionItem(Transaction("Free time", account?.name ?: "Cash", "+Rp80.000", GreenIncome, "😊", "Kemarin")) }
                 item { TransactionItem(Transaction("Makan Siang", "Pengeluaran · Makanan", "-Rp45.000", RedExpense, "🍔", "21 Apr")) }
             }
         }

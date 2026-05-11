@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -15,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.nowa.ui.theme.NowaLightBlue
+
 import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
 
@@ -32,8 +36,9 @@ fun TambahAkunScreen(navController: NavHostController) {
         modifier = Modifier
             .fillMaxSize()
             .background(DarkBlue)
+            .statusBarsPadding()
     ) {
-        Column(modifier = Modifier.padding(24.dp).padding(top = 24.dp)) {
+        Column(modifier = Modifier.padding(24.dp).padding(top = 16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = { navController.popBackStack() }, modifier = Modifier.background(White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = White)
@@ -48,7 +53,13 @@ fun TambahAkunScreen(navController: NavHostController) {
             color = White,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            Column(modifier = Modifier.padding(24.dp).fillMaxWidth()) {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+            ) {
                 Text("NAMA AKUN", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = TextGray)
                 OutlinedTextField(
                     value = accountName,
@@ -127,7 +138,7 @@ fun TambahAkunScreen(navController: NavHostController) {
                     )
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
                         if (accountName.isNotEmpty()) {
