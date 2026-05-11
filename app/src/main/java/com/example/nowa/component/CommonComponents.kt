@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -139,16 +140,17 @@ fun BottomNavigationBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(16.dp, RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+            .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)),
         color = White,
-        tonalElevation = 8.dp,
-        shadowElevation = 16.dp,
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-        modifier = Modifier.fillMaxWidth()
+        tonalElevation = 8.dp
     ) {
         NavigationBar(
-            containerColor = Color.Transparent,
+            containerColor = White,
             tonalElevation = 0.dp,
-            modifier = Modifier.height(80.dp)
+            windowInsets = NavigationBarDefaults.windowInsets // Menggunakan insets bawaan agar tidak terpotong sistem nav bar
         ) {
             NavigationBarItem(
                 selected = currentRoute == "home",
