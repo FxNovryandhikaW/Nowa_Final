@@ -33,14 +33,7 @@ data class Transaction(
     val time: String = "Hari ini"
 )
 
-val recentTransactions = mutableStateListOf(
-    Transaction("Gaji Bulan April", "Pemasukan · Gaji", "+Rp3.200.000", GreenIncome, "💰", "09:00"),
-    Transaction("Makan Siang", "Pengeluaran · Makanan", "-Rp45.000", RedExpense, "🍔", "12:30"),
-    Transaction("Transportasi", "Pengeluaran · Transport", "-Rp25.000", RedExpense, "🚚", "07:15"),
-    Transaction("Pulsa & Data", "Pengeluaran · Utilities", "-Rp80.000", RedExpense, "📱", "19:00"),
-    Transaction("Kopi & Snack", "Pengeluaran · Makanan", "-Rp38.000", RedExpense, "☕", "10:20"),
-    Transaction("Freelance Design", "Pemasukan · Sampingan", "+Rp350.000", GreenIncome, "🎓", "15:00")
-)
+val recentTransactions = mutableStateListOf<Transaction>()
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
@@ -118,11 +111,11 @@ fun MenuIcon(label: String, icon: ImageVector, bgColor: Color, onClick: () -> Un
 }
 
 @Composable
-fun FilterChip(selected: Boolean, text: String) {
+fun FilterChip(selected: Boolean, text: String, onClick: () -> Unit) {
     Surface(
         color = if (selected) White.copy(alpha = 0.2f) else White.copy(alpha = 0.1f),
         shape = RoundedCornerShape(16.dp),
-        modifier = Modifier.padding(end = 8.dp)
+        modifier = Modifier.padding(end = 8.dp).clickable { onClick() }
     ) {
         Text(
             text = text,

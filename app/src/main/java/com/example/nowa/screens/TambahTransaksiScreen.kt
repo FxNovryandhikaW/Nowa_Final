@@ -17,9 +17,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.nowa.component.Transaction
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import com.example.nowa.data.model.TransactionModel
+import com.example.nowa.data.model.TransactionType
+import com.example.nowa.data.repository.TransactionRepository
+import com.example.nowa.component.Transaction as TransactionUI
 import com.example.nowa.component.recentTransactions
 import com.example.nowa.ui.theme.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun TambahTransaksiScreen(navController: NavHostController) {
@@ -27,6 +33,11 @@ fun TambahTransaksiScreen(navController: NavHostController) {
     var nominal by remember { mutableStateOf("") }
     var keterangan by remember { mutableStateOf("") }
     var kategori by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+    val repository = remember { TransactionRepository() }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -167,25 +178,51 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         if (nominal.isNotEmpty() && keterangan.isNotEmpty()) {
-                            val newTransaction = Transaction(
-                                name = keterangan,
-                                category = "${if (isPemasukan) "Pemasukan" else "Pengeluaran"} · $kategori",
-                                amount = "${if (isPemasukan) "+" else "-"}Rp$nominal",
-                                color = if (isPemasukan) GreenIncome else RedExpense,
-                                emoji = if (isPemasukan) "💰" else "🛒"
+                            isLoading = true
+                            val amountLong = nominal.toLongOrNull() ?: 0L
+                            
+                            val transactionData = TransactionModel(
+                                amount = amountLong,
+                                note = keterangan,
+                                category = kategori,
+                                type = if (isPemasukan) TransactionType.INCOME else TransactionType.EXPENSE
                             )
-                            recentTransactions.add(0, newTransaction)
-                            navController.popBackStack()
+
+                            scope.launch {
+                                val result = repository.addTransaction(transactionData)
+                                if (result.isSuccess) {
+                                    // Update local UI state for immediate feedback
+                                    val newTransactionUI = TransactionUI(
+                                        name = keterangan,
+                                        category = "${if (isPemasukan) "Pemasukan" else "Pengeluaran"} · $kategori",
+                                        amount = "${if (isPemasukan) "+" else "-"}Rp$nominal",
+                                        color = if (isPemasukan) GreenIncome else RedExpense,
+                                        emoji = if (isPemasukan) "💰" else "🛒"
+                                    )
+                                    recentTransactions.add(0, newTransactionUI)
+                                    Toast.makeText(context, "Transaksi berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack()
+                                } else {
+                                    val errorMsg = result.exceptionOrNull()?.message ?: "Gagal menyimpan transaksi"
+                                    Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                }
+                                isLoading = false
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(60.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
                     shape = RoundedCornerShape(16.dp),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                    enabled = !isLoading
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("💾 ", fontSize = 16.sp)
-                        Text("Simpan Transaksi", fontWeight = FontWeight.Black, fontSize = 16.sp)
+                    if (isLoading) {
+                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("💾 ", fontSize = 16.sp)
+                            Text("Simpan Transaksi", fontWeight = FontWeight.Black, fontSize = 16.sp)
+                        }
                     }
                 }
                 TextButton(

@@ -1,6 +1,5 @@
 package com.example.nowa.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,95 +8,136 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.nowa.R
 import com.example.nowa.component.SectionHeader
 import com.example.nowa.ui.theme.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfilScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(NowaPrimaryDark)
-    ) {
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    
+    var userName by remember { mutableStateOf("User") }
+    var userEmail by remember { mutableStateOf("email@example.com") }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            firestore.collection("users").document(uid).get()
+                .addOnSuccessListener { doc ->
+                    userName = doc.getString("nama") ?: "User"
+                    userEmail = doc.getString("email") ?: auth.currentUser?.email ?: ""
+                    isLoading = false
+                }
+                .addOnFailureListener {
+                    isLoading = false
+                }
+        } else {
+            isLoading = false
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = Color.Transparent
+    ) { padding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 40.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(NowaPrimaryDark)
+                .padding(padding)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(CircleShape)
-                    .background(NowaSecondary),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("R", fontSize = 48.sp, fontWeight = FontWeight.Black, color = NowaPrimaryDark)
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(NowaSecondary),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(userName.take(1).uppercase(), fontSize = 48.sp, fontWeight = FontWeight.Black, color = NowaPrimaryDark)
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(userName, color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                Text(userEmail, color = White.copy(alpha = 0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            Text("Reggy Desvita", color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
-            Text("2417051016@students.unila.ac.id", color = White.copy(alpha = 0.7f), fontSize = 14.sp, fontWeight = FontWeight.Medium)
-        }
 
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = NowaBackground,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
-        ) {
-            LazyColumn(
-                modifier = Modifier.padding(16.dp),
-                contentPadding = PaddingValues(bottom = 32.dp)
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = NowaBackground,
+                shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
             ) {
-                item { SectionHeader("AKUN & KEUANGAN") }
-                item { ProfileMenuItem("Kelola Akun", "3 akun terdaftar", Icons.Outlined.AccountBalance) { navController.navigate("accounts") } }
-                item { ProfileMenuItem("Laporan Keuangan", "Ringkasan bulanan", Icons.Outlined.BarChart) { } }
+                LazyColumn(
+                    modifier = Modifier.padding(16.dp),
+                    contentPadding = PaddingValues(bottom = 32.dp)
+                ) {
+                    item { SectionHeader("AKUN & KEUANGAN") }
+                    item { ProfileMenuItem("Kelola Akun", "Lihat daftar akunmu", Icons.Outlined.AccountBalance) { navController.navigate("accounts") } }
+                    item { ProfileMenuItem("Laporan Keuangan", "Ringkasan bulanan", Icons.Outlined.BarChart) { 
+                        navController.navigate("laporan")
+                    } }
 
-                item { SectionHeader("PENGATURAN") }
-                item { ProfileMenuItem("Notifikasi", "Aktif", Icons.Outlined.Notifications) { navController.navigate("notifications") } }
-                item { ProfileMenuItem("Keamanan & Privasi", "Enkripsi lokal aktif", Icons.Outlined.Lock) { } }
-                item { ProfileMenuItem("Bahasa", "Bahasa Indonesia", Icons.Outlined.Public) { } }
+                    item { SectionHeader("PENGATURAN") }
+                    item { ProfileMenuItem("Notifikasi", "Aktif", Icons.Outlined.Notifications) { navController.navigate("notifications") } }
+                    item { ProfileMenuItem("Keamanan & Privasi", "Enkripsi lokal aktif", Icons.Outlined.Lock) { 
+                        scope.launch { snackbarHostState.showSnackbar("Fitur Keamanan akan segera hadir!") }
+                    } }
+                    item { ProfileMenuItem("Bahasa", "Bahasa Indonesia", Icons.Outlined.Public) { 
+                        scope.launch { snackbarHostState.showSnackbar("Pengaturan Bahasa akan segera hadir!") }
+                    } }
 
-                item { SectionHeader("TENTANG") }
-                item { ProfileMenuItem("Tentang NOWA", "v1.0.0 · Universitas Lampung", Icons.Outlined.Info) { navController.navigate("about") } }
+                    item { SectionHeader("TENTANG") }
+                    item { ProfileMenuItem("Tentang NOWA", "v1.0.0 · Universitas Lampung", Icons.Outlined.Info) { navController.navigate("about") } }
 
-                item { Spacer(modifier = Modifier.height(24.dp)) }
-                item {
-                    Button(
-                        onClick = { navController.navigate("splash") { popUpTo(0) } },
-                        modifier = Modifier.fillMaxWidth().height(60.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = RedExpense.copy(alpha = 0.1f)),
-                        shape = RoundedCornerShape(16.dp),
-                        border = BorderStroke(1.dp, RedExpense.copy(alpha = 0.2f))
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("📕 ", fontSize = 16.sp)
-                            Text("Keluar dari Akun", color = RedExpense, fontWeight = FontWeight.Black, fontSize = 16.sp)
+                    item { Spacer(modifier = Modifier.height(24.dp)) }
+                    item {
+                        Button(
+                            onClick = { 
+                                auth.signOut()
+                                navController.navigate("splash") { popUpTo(0) } 
+                            },
+                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = RedExpense.copy(alpha = 0.1f)),
+                            shape = RoundedCornerShape(16.dp),
+                            border = BorderStroke(1.dp, RedExpense.copy(alpha = 0.2f))
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("📕 ", fontSize = 16.sp)
+                                Text("Keluar dari Akun", color = RedExpense, fontWeight = FontWeight.Black, fontSize = 16.sp)
+                            }
                         }
                     }
-                }
-                item {
-                    Box(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), contentAlignment = Alignment.Center) {
-                        Text(
-                            "← Kembali ke Dashboard",
-                            color = NowaPrimaryDark.copy(alpha = 0.6f),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable { navController.popBackStack() }
-                        )
+                    item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(top = 20.dp), contentAlignment = Alignment.Center) {
+                            Text(
+                                "← Kembali ke Dashboard",
+                                color = NowaPrimaryDark.copy(alpha = 0.6f),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable { navController.popBackStack() }
+                            )
+                        }
                     }
                 }
             }
@@ -132,7 +172,7 @@ fun ProfileMenuItem(title: String, subtitle: String, icon: androidx.compose.ui.g
                 Text(title, fontWeight = FontWeight.Bold, color = TextBlack)
                 Text(subtitle, fontSize = 12.sp, color = TextGray)
             }
-            Icon(androidx.compose.material.icons.Icons.Outlined.ChevronRight, contentDescription = null, tint = TextGray)
+            Icon(Icons.Outlined.ChevronRight, contentDescription = null, tint = TextGray)
         }
     }
 }

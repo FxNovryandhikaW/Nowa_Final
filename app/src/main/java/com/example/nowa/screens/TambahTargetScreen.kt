@@ -19,8 +19,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.NowaLightBlue
 
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import com.example.nowa.data.*
+import com.example.nowa.data.model.GoalModel
+import com.example.nowa.data.repository.GoalRepository
 import com.example.nowa.ui.theme.*
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -28,8 +33,12 @@ fun TambahTargetScreen(navController: NavHostController) {
     var goalName by remember { mutableStateOf("") }
     var targetAmount by remember { mutableStateOf("") }
     var targetDate by remember { mutableStateOf("Pilih Tanggal") }
-    
+    var isLoading by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+    val repository = remember { GoalRepository() }
     val context = LocalContext.current
+    
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
@@ -114,27 +123,36 @@ fun TambahTargetScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         if (goalName.isNotEmpty() && targetAmount.isNotEmpty()) {
-                            globalGoals.add(
-                                GoalData(
-                                    name = goalName,
-                                    targetAmount = "Rp$targetAmount",
-                                    savedAmount = "Rp0",
-                                    remainingAmount = targetDate,
-                                    progress = 0f,
-                                    percentage = "0%",
-                                    emoji = "🎯"
-                                )
+                            isLoading = true
+                            val goal = GoalModel(
+                                name = goalName,
+                                targetAmount = targetAmount.toLongOrNull() ?: 0L,
+                                savedAmount = 0L,
+                                targetDate = targetDate,
+                                emoji = "🎯"
                             )
-                            navController.popBackStack()
+
+                            scope.launch {
+                                val result = repository.addGoal(goal)
+                                if (result.isSuccess) {
+                                    navController.popBackStack()
+                                }
+                                isLoading = false
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    enabled = !isLoading
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("🎯 ", fontSize = 16.sp)
-                        Text("Simpan Goal", fontWeight = FontWeight.Bold)
+                    if (isLoading) {
+                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🎯 ", fontSize = 16.sp)
+                            Text("Simpan Goal", fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
                 TextButton(

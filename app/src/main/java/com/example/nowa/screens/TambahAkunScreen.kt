@@ -19,8 +19,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.NowaLightBlue
 
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import com.example.nowa.data.*
+import com.example.nowa.data.model.AccountModel
+import com.example.nowa.data.repository.AccountRepository
 import com.example.nowa.ui.theme.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun TambahAkunScreen(navController: NavHostController) {
@@ -29,6 +34,11 @@ fun TambahAkunScreen(navController: NavHostController) {
     var initialBalance by remember { mutableStateOf("") }
     var bankNumber by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+    val repository = remember { AccountRepository() }
+    val context = LocalContext.current
 
     val accountTypes = listOf("Cash", "Bank", "E-Wallet", "Kartu Kredit")
 
@@ -142,23 +152,48 @@ fun TambahAkunScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         if (accountName.isNotEmpty()) {
+                            isLoading = true
                             val emoji = when(accountType) {
                                 "Bank" -> "🏦"
                                 "E-Wallet" -> "💳"
                                 "Kartu Kredit" -> "💳"
                                 else -> "💵"
                             }
-                            globalAccounts.add(AccountData(accountName, accountType, "Rp$initialBalance", emoji))
-                            navController.popBackStack()
+                            
+                            val account = AccountModel(
+                                name = accountName,
+                                type = accountType,
+                                balance = initialBalance.toLongOrNull() ?: 0L,
+                                emoji = emoji,
+                                accountNumber = bankNumber,
+                                phoneNumber = phoneNumber
+                            )
+
+                            scope.launch {
+                                val result = repository.addAccount(account)
+                                if (result.isSuccess) {
+                                    Toast.makeText(context, "Akun berhasil ditambah!", Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack()
+                                } else {
+                                    val errorMsg = result.exceptionOrNull()?.message ?: "Gagal menambah akun"
+                                    Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                }
+                                isLoading = false
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    enabled = !isLoading
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("💾 ", fontSize = 16.sp)
-                        Text("Tambah Akun", fontWeight = FontWeight.Bold)
+                    if (isLoading) {
+                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("💾 ", fontSize = 16.sp)
+                            Text("Tambah Akun", fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
                 TextButton(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()) {

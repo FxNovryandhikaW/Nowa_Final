@@ -87,10 +87,12 @@ fun MainScreen(navController: NavHostController) {
             composable("notifications") { NotifikasiScreen(navController) }
             composable("profile") { ProfilScreen(navController) }
             composable("profil") { ProfilScreen(navController) }
+            composable("laporan") { LaporanScreen(navController) }
             composable("about") { TentangScreen(navController) }
             composable("add_transaction") { TambahTransaksiScreen(navController) }
             composable("add_budget") { TambahAnggaranScreen(navController) }
             composable("add_goal") { TambahTargetScreen(navController) }
+            composable("add_account") { TambahAkunScreen(navController) }
         }
     }
 }
