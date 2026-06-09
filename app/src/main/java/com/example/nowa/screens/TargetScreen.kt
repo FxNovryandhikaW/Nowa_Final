@@ -14,15 +14,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.component.BudgetCard
 import com.example.nowa.component.GoalCard
-import com.example.nowa.data.*
+import com.example.nowa.data.model.BudgetModel
+import com.example.nowa.data.model.GoalModel
+import com.example.nowa.data.repository.BudgetRepository
+import com.example.nowa.data.repository.GoalRepository
 import com.example.nowa.ui.theme.*
+import java.util.Locale
 
 @Composable
 fun TargetScreen(navController: NavHostController) {
+    val goalRepo = remember { GoalRepository() }
+    val budgetRepo = remember { BudgetRepository() }
+    
+    var goals by remember { mutableStateOf<List<GoalModel>>(emptyList()) }
+    var budgets by remember { mutableStateOf<List<BudgetModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        val gResult = goalRepo.getGoals()
+        val bResult = budgetRepo.getBudgets()
+        
+        if (gResult.isSuccess) goals = gResult.getOrDefault(emptyList())
+        if (bResult.isSuccess) budgets = bResult.getOrDefault(emptyList())
+        
+        isLoading = false
+    }
+
+    // Helper to format currency
+    fun formatRp(amount: Long): String {
+        return "Rp${String.format(Locale("id", "ID"), "%,d", amount).replace(',', '.')}"
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,53 +70,81 @@ fun TargetScreen(navController: NavHostController) {
             color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(16.dp),
-                contentPadding = PaddingValues(bottom = 24.dp)
-            ) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Target Tabungan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
-                        Text(
-                            "+ Tambah",
-                            color = NowaPrimary,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable { navController.navigate("add_goal") }
-                        )
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = NowaPrimary)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(16.dp),
+                    contentPadding = PaddingValues(bottom = 24.dp)
+                ) {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Target Tabungan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
+                            Text(
+                                "+ Tambah",
+                                color = NowaPrimary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable { navController.navigate("add_goal") }
+                            )
+                        }
                     }
-                }
-                items(globalGoals) { goal ->
-                    GoalCard(goal.name, goal.targetAmount, goal.savedAmount, goal.remainingAmount, goal.progress, goal.percentage, goal.emoji)
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, bottom = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Budget Bulanan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
-                        Text(
-                            "+ Tambah",
-                            color = NowaPrimary,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.clickable { navController.navigate("add_budget") }
+                    items(goals) { goal ->
+                        val progress = if (goal.targetAmount > 0) goal.savedAmount.toFloat() / goal.targetAmount else 0f
+                        val percent = "${(progress * 100).toInt()}%"
+                        GoalCard(
+                            goal.name, 
+                            formatRp(goal.targetAmount), 
+                            formatRp(goal.savedAmount), 
+                            goal.targetDate, 
+                            progress, 
+                            percent, 
+                            goal.emoji
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                }
-                items(globalBudgets) { budget ->
-                    BudgetCard(budget.name, budget.spentAmount, budget.totalAmount, budget.progress, budget.usageText, budget.remainingText, budget.color, budget.emoji)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, bottom = 12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Budget Bulanan", fontWeight = FontWeight.Black, fontSize = 18.sp, color = NowaPrimaryDark)
+                            Text(
+                                "+ Tambah",
+                                color = NowaPrimary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.clickable { navController.navigate("add_budget") }
+                            )
+                        }
+                    }
+                    items(budgets) { budget ->
+                        val progress = if (budget.limitAmount > 0) budget.spentAmount.toFloat() / budget.limitAmount else 0f
+                        val usageText = "${(progress * 100).toInt()}% terpakai"
+                        val remaining = budget.limitAmount - budget.spentAmount
+                        BudgetCard(
+                            budget.name, 
+                            formatRp(budget.spentAmount), 
+                            formatRp(budget.limitAmount), 
+                            progress, 
+                            usageText, 
+                            "Sisa ${formatRp(remaining)}", 
+                            Color(android.graphics.Color.parseColor(budget.colorHex)), 
+                            budget.emoji
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
