@@ -21,7 +21,6 @@ import com.example.nowa.ui.theme.NowaLightBlue
 
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
-import com.example.nowa.data.*
 import com.example.nowa.data.model.AccountModel
 import com.example.nowa.data.repository.AccountRepository
 import com.example.nowa.ui.theme.*

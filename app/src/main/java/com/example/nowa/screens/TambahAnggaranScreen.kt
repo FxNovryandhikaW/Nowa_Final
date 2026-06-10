@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.NowaLightBlue
 
-import com.example.nowa.data.*
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
 import com.example.nowa.data.model.BudgetModel
 import com.example.nowa.data.repository.BudgetRepository
 import com.example.nowa.ui.theme.*
@@ -38,6 +39,7 @@ fun TambahAnggaranScreen(navController: NavHostController) {
 
     val scope = rememberCoroutineScope()
     val repository = remember { BudgetRepository() }
+    val context = LocalContext.current
 
     val emojis = listOf("💰", "🍔", "🚌", "🎮", "👕", "🏠", "🏥", "🎓", "🛒", "🔌", "🎬", "✈️")
 
@@ -127,7 +129,10 @@ fun TambahAnggaranScreen(navController: NavHostController) {
                             scope.launch {
                                 val result = repository.addBudget(budget)
                                 if (result.isSuccess) {
+                                    Toast.makeText(context, "Budget berhasil disimpan!", Toast.LENGTH_SHORT).show()
                                     navController.popBackStack()
+                                } else {
+                                    Toast.makeText(context, "Gagal: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                                 }
                                 isLoading = false
                             }

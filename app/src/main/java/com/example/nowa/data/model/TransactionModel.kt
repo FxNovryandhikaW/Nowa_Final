@@ -9,6 +9,8 @@ enum class TransactionType {
 data class TransactionModel(
     val id: String = "",
     val userId: String = "",
+    val accountId: String = "",
+    val accountName: String = "",
     val amount: Long = 0,
     val category: String = "",
     val note: String = "",
