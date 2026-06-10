@@ -21,11 +21,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import java.util.Locale
+import com.example.nowa.*
 import com.example.nowa.data.*
+import com.example.nowa.data.model.AccountModel
+import com.example.nowa.data.repository.AccountRepository
 import com.example.nowa.ui.theme.*
 
 @Composable
 fun AkunScreen(navController: NavHostController) {
+    val repository = remember { AccountRepository() }
+    var accounts by remember { mutableStateOf<List<AccountModel>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        val result = repository.getAccounts()
+        if (result.isSuccess) {
+            accounts = result.getOrDefault(emptyList())
+        }
+        isLoading = false
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +60,10 @@ fun AkunScreen(navController: NavHostController) {
                 Text("Daftar Akun", color = White, fontSize = 28.sp, fontWeight = FontWeight.Black)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Total saldo: Rp3.650.000", color = White.copy(alpha = 0.7f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            val totalBalance = accounts.sumOf { it.balance }
+            val formattedTotal = "Rp${String.format(Locale("id", "ID"), "%,d", totalBalance).replace(',', '.')}"
+            
+            Text("Total saldo: $formattedTotal", color = White.copy(alpha = 0.7f), fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
 
         Surface(
@@ -52,38 +71,45 @@ fun AkunScreen(navController: NavHostController) {
             color = NowaBackground,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(bottom = 24.dp)
-            ) {
-                items(globalAccounts) { account ->
-                    AccountListItem(account.name, account.type, account.balance, account.emoji, White) {
-                        val encodedName = android.net.Uri.encode(account.name)
-                        navController.navigate("account_detail?accountName=$encodedName")
-                    }
+            if (isLoading) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = NowaPrimary)
                 }
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
-                            .border(2.dp, NowaPrimary.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
-                            .background(NowaPrimary.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
-                            .clickable { navController.navigate("add_account") },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .background(NowaPrimary.copy(alpha = 0.15f), CircleShape),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(Icons.Default.Add, contentDescription = null, tint = NowaPrimary, modifier = Modifier.size(20.dp))
+            } else {
+                LazyColumn(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 24.dp)
+                ) {
+                    items(accounts) { account ->
+                        val formattedBalance = "Rp${String.format(Locale("id", "ID"), "%,d", account.balance).replace(',', '.')}"
+                        AccountListItem(account.name, account.type, formattedBalance, account.emoji, White) {
+                            val encodedName = android.net.Uri.encode(account.name)
+                            navController.navigate("account_detail?accountName=$encodedName")
+                        }
+                    }
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .border(2.dp, NowaPrimary.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
+                                .background(NowaPrimary.copy(alpha = 0.05f), RoundedCornerShape(24.dp))
+                                .clickable { navController.navigate("add_account") },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .background(NowaPrimary.copy(alpha = 0.15f), CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(Icons.Default.Add, contentDescription = null, tint = NowaPrimary, modifier = Modifier.size(20.dp))
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Text("Tambah Akun Baru", color = NowaPrimary, fontWeight = FontWeight.Black, fontSize = 16.sp)
                             }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text("Tambah Akun Baru", color = NowaPrimary, fontWeight = FontWeight.Black, fontSize = 16.sp)
                         }
                     }
                 }

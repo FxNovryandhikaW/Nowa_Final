@@ -25,7 +25,7 @@ import com.example.nowa.ui.theme.*
 
 @Composable
 fun EditAkunScreen(navController: NavHostController, initialAccountName: String) {
-    val currentAccount = remember { globalAccounts.find { it.name == initialAccountName } }
+    val currentAccount = remember(initialAccountName) { globalAccounts.find { it.name == initialAccountName } }
     
     var accountName by remember { mutableStateOf(currentAccount?.name ?: "Kas / Tunai") }
     var accountType by remember { mutableStateOf(currentAccount?.type ?: "Cash") }

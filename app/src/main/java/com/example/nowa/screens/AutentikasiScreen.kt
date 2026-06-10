@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nowa.ui.theme.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,9 +29,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.geometry.Offset
 
-val registeredUsers = mutableListOf(
-    Pair("muthia@nowa.com", "nowa123")
-)
 
 @Composable
 fun SplashSkrin(navController: NavHostController) {
@@ -109,6 +108,9 @@ fun MasukScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var pesanError by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val auth = FirebaseAuth.getInstance()
 
     Column(
         modifier = Modifier
@@ -260,23 +262,32 @@ fun MasukScreen(navController: NavHostController) {
                         pesanError = "Email dan password tidak boleh kosong"
                         return@Button
                     }
-                    val user = registeredUsers.find { it.first == email && it.second == password }
-                    if (user != null) {
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                    isLoading = true
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            isLoading = false
+                            if (task.isSuccessful) {
+                                navController.navigate("home") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                pesanError = task.exception?.localizedMessage ?: "Login gagal"
+                            }
                         }
-                    } else {
-                        pesanError = "Email atau password salah"
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(60.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
                 shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                enabled = !isLoading
             ) {
-                Text("Masuk Sekarang", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Masuk Sekarang", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
             }
             
             Spacer(modifier = Modifier.height(24.dp))
@@ -303,6 +314,10 @@ fun DaftarScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var pesanError by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val auth = FirebaseAuth.getInstance()
+    val firestore = FirebaseFirestore.getInstance()
 
     Column(
         modifier = Modifier
@@ -457,20 +472,48 @@ fun DaftarScreen(navController: NavHostController) {
                         pesanError = "Semua kolom harus diisi"
                         return@Button
                     }
-                    val sudahAda = registeredUsers.any { it.first == email }
-                    if (sudahAda) {
-                        pesanError = "Email sudah terdaftar"
-                    } else {
-                        registeredUsers.add(Pair(email, password))
-                        navController.navigate("login")
+                    if (password.length < 6) {
+                        pesanError = "Password minimal 6 karakter"
+                        return@Button
                     }
+                    isLoading = true
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val uid = auth.currentUser?.uid
+                                val userMap = mapOf(
+                                    "nama" to nama,
+                                    "email" to email,
+                                    "createdAt" to System.currentTimeMillis()
+                                )
+                                if (uid != null) {
+                                    firestore.collection("users").document(uid).set(userMap)
+                                        .addOnSuccessListener {
+                                            isLoading = false
+                                            navController.navigate("login")
+                                        }
+                                        .addOnFailureListener {
+                                            isLoading = false
+                                            pesanError = it.localizedMessage ?: "Gagal menyimpan data"
+                                        }
+                                }
+                            } else {
+                                isLoading = false
+                                pesanError = task.exception?.localizedMessage ?: "Registrasi gagal"
+                            }
+                        }
                 },
                 modifier = Modifier.fillMaxWidth().height(60.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
                 shape = RoundedCornerShape(16.dp),
-                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                enabled = !isLoading
             ) {
-                Text("Buat Akun", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (isLoading) {
+                    CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text("Buat Akun", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
             }
             
             Spacer(modifier = Modifier.height(20.dp))

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "339571144733",
+    "project_id": "nowa-77201192",
+    "storage_bucket": "nowa-77201192.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339571144733:android:527dcdcf96d1d90ee2eef4",
+        "android_client_info": {
+          "package_name": "com.example.nowa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoZ2vKJ4-EXrkGYXcoUQ8BI5ON3FVaGFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

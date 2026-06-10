@@ -2,6 +2,7 @@ package com.example.nowa.screens
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,10 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.nowa.ui.theme.NowaLightBlue
-
-import com.example.nowa.data.*
+import com.example.nowa.data.model.GoalModel
+import com.example.nowa.data.repository.GoalRepository
 import com.example.nowa.ui.theme.*
+import kotlinx.coroutines.launch
 import java.util.*
 
 @Composable
@@ -28,19 +29,25 @@ fun TambahTargetScreen(navController: NavHostController) {
     var goalName by remember { mutableStateOf("") }
     var targetAmount by remember { mutableStateOf("") }
     var targetDate by remember { mutableStateOf("Pilih Tanggal") }
-    
+    var isLoading by remember { mutableStateOf(value = false) }
+
+    val scope = rememberCoroutineScope()
+    val repository = remember { GoalRepository() }
     val context = LocalContext.current
+    
     val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val year = calendar[Calendar.YEAR]
+    val month = calendar[Calendar.MONTH]
+    val day = calendar[Calendar.DAY_OF_MONTH]
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
             targetDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
         },
-        year, month, day
+        year,
+        month,
+        day,
     )
 
     Column(
@@ -114,27 +121,39 @@ fun TambahTargetScreen(navController: NavHostController) {
                 Button(
                     onClick = {
                         if (goalName.isNotEmpty() && targetAmount.isNotEmpty()) {
-                            globalGoals.add(
-                                GoalData(
-                                    name = goalName,
-                                    targetAmount = "Rp$targetAmount",
-                                    savedAmount = "Rp0",
-                                    remainingAmount = targetDate,
-                                    progress = 0f,
-                                    percentage = "0%",
-                                    emoji = "🎯"
-                                )
+                            isLoading = true
+                            val goal = GoalModel(
+                                name = goalName,
+                                targetAmount = targetAmount.toLongOrNull() ?: 0L,
+                                savedAmount = 0L,
+                                targetDate = targetDate,
+                                emoji = "🎯"
                             )
-                            navController.popBackStack()
+
+                            scope.launch {
+                                val result = repository.addGoal(goal)
+                                if (result.isSuccess) {
+                                    Toast.makeText(context, "Goal berhasil disimpan!", Toast.LENGTH_SHORT).show()
+                                    navController.popBackStack()
+                                } else {
+                                    Toast.makeText(context, "Gagal: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
+                                }
+                                isLoading = false
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NowaPrimary),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    enabled = !isLoading
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("🎯 ", fontSize = 16.sp)
-                        Text("Simpan Goal", fontWeight = FontWeight.Bold)
+                    if (isLoading) {
+                        CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("🎯 ", fontSize = 16.sp)
+                            Text("Simpan Goal", fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
                 TextButton(
