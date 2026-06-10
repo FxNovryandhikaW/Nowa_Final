@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,15 +34,14 @@ import com.example.nowa.component.TransactionItem
 import com.example.nowa.data.model.TransactionModel
 import com.example.nowa.data.model.TransactionType
 import com.example.nowa.data.repository.AccountRepository
-import com.example.nowa.data.repository.BudgetRepository
 import com.example.nowa.data.repository.GoalRepository
 import com.example.nowa.data.repository.TransactionRepository
 import com.example.nowa.util.FinancialHealthScorer
 import com.example.nowa.component.Transaction as TransactionUI
-import com.example.nowa.data.*
 import com.example.nowa.ui.theme.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Locale
 
 @Composable
 fun BerandaRiwayatScreen(navController: NavHostController) {
@@ -50,13 +50,12 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
     val repository = remember { TransactionRepository() }
     val accountRepo = remember { AccountRepository() }
     val goalRepo = remember { GoalRepository() }
-    val budgetRepo = remember { BudgetRepository() }
     
     var userName by remember { mutableStateOf("User") }
     var transactions by remember { mutableStateOf<List<TransactionModel>>(emptyList()) }
     var accountCount by remember { mutableIntStateOf(0) }
     var goalCount by remember { mutableIntStateOf(0) }
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(value = true) }
 
     // Fetch all data
     LaunchedEffect(Unit) {
@@ -89,15 +88,15 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
         isLoading = false
     }
 
-    val totalIncome = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
-    val totalExpense = transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
+    val totalIncome = transactions.asSequence().filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
+    val totalExpense = transactions.asSequence().filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
     
     val healthScore = FinancialHealthScorer.calculateScore(transactions)
     val healthStatus = FinancialHealthScorer.getStatus(healthScore)
 
     // Helper to format currency
     fun formatRp(amount: Long): String {
-        return "Rp${String.format("%,d", amount).replace(',', '.')}"
+        return "Rp${String.format(Locale("id", "ID"), "%,d", amount).replace(',', '.')}"
     }
 
     Column(
@@ -170,7 +169,7 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column {
-                                Text("$healthScore", fontSize = 56.sp, fontWeight = FontWeight.Black, color = White)
+                                Text(healthScore.toString(), fontSize = 56.sp, fontWeight = FontWeight.Black, color = White)
                                 Surface(
                                     color = NowaSecondary,
                                     shape = RoundedCornerShape(20.dp)
@@ -241,7 +240,7 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 24.dp, end = 24.dp, bottom = 20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         Button(
                             onClick = { navController.navigate("add_transaction") },
@@ -271,7 +270,7 @@ fun BerandaRiwayatScreen(navController: NavHostController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         MenuIcon("Akun", Icons.Default.AccountBalance, Color.White) { navController.navigate("accounts") }
-                        MenuIcon("Riwayat", Icons.Default.Assignment, Color.White) { navController.navigate("history") }
+                        MenuIcon("Riwayat", Icons.AutoMirrored.Filled.Assignment, Color.White) { navController.navigate("history") }
                         MenuIcon("Goals", Icons.Default.TrackChanges, Color.White) { navController.navigate("goals") }
                         MenuIcon("Profil", Icons.Default.Person, Color.White) { navController.navigate("profile") }
                     }

@@ -3,37 +3,35 @@ package com.example.nowa.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavHostController
+import com.example.nowa.component.FilterChip
 import com.example.nowa.component.SectionHeader
 import com.example.nowa.component.TransactionItem
 import com.example.nowa.component.Transaction as TransactionUI
-import androidx.navigation.NavHostController
-import com.example.nowa.ui.theme.*
 import com.example.nowa.data.model.TransactionModel
 import com.example.nowa.data.model.TransactionType
 import com.example.nowa.data.repository.TransactionRepository
-import androidx.compose.foundation.lazy.LazyRow
-import com.example.nowa.component.FilterChip
+import com.example.nowa.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun RiwayatScreen(navController: NavHostController) {
+fun RiwayatScreen(@Suppress("UNUSED_PARAMETER") navController: NavHostController) {
     val repository = remember { TransactionRepository() }
     var transactions by remember { mutableStateOf<List<TransactionModel>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(value = true) }
     var selectedFilter by remember { mutableStateOf("Semua") }
 
     LaunchedEffect(Unit) {
@@ -50,16 +48,21 @@ fun RiwayatScreen(navController: NavHostController) {
         else -> transactions
     }
 
-    // Grouping by date
+    // Grouping by date safely
     val groupedTransactions = filteredTransactions.groupBy { 
-        val sdf = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-        sdf.format(it.date)
+        try {
+            val sdf = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
+            sdf.format(it.date.toDate())
+        } catch (e: Exception) {
+            @Suppress("UNUSED_VARIABLE") val dummy = e
+            "Tanggal Tidak Diketahui"
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NowaPrimaryDark)
+            .background(NowaPrimaryDark),
     ) {
         Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 60.dp, bottom = 24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -77,7 +80,7 @@ fun RiwayatScreen(navController: NavHostController) {
                     FilterChip(
                         selected = selectedFilter == filter,
                         text = filter,
-                        onClick = { selectedFilter = filter }
+                        onClick = { selectedFilter = filter },
                     )
                 }
             }
@@ -104,10 +107,16 @@ fun RiwayatScreen(navController: NavHostController) {
                     groupedTransactions.forEach { (date, transactionsInDate) ->
                         item { SectionHeader(date.uppercase()) }
                         items(transactionsInDate) { transaction ->
+                            val formattedAmount = try {
+                                String.format(Locale("id", "ID"), "%,d", transaction.amount).replace(',', '.')
+                            } catch (e: Exception) {
+                                transaction.amount.toString()
+                            }
+                            
                             val uiTransaction = TransactionUI(
                                 name = transaction.note,
                                 category = transaction.category,
-                                amount = "${if (transaction.type == TransactionType.INCOME) "+" else "-"}Rp${String.format(Locale("id", "ID"), "%,d", transaction.amount).replace(',', '.')}",
+                                amount = "${if (transaction.type == TransactionType.INCOME) "+" else "-"}Rp$formattedAmount",
                                 color = if (transaction.type == TransactionType.INCOME) GreenIncome else RedExpense,
                                 emoji = if (transaction.type == TransactionType.INCOME) "💰" else "🛒"
                             )

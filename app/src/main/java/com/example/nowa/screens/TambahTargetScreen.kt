@@ -2,6 +2,7 @@ package com.example.nowa.screens
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,11 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.nowa.ui.theme.NowaLightBlue
-
-import androidx.compose.ui.platform.LocalContext
-import android.widget.Toast
-import com.example.nowa.data.*
 import com.example.nowa.data.model.GoalModel
 import com.example.nowa.data.repository.GoalRepository
 import com.example.nowa.ui.theme.*
@@ -33,23 +29,25 @@ fun TambahTargetScreen(navController: NavHostController) {
     var goalName by remember { mutableStateOf("") }
     var targetAmount by remember { mutableStateOf("") }
     var targetDate by remember { mutableStateOf("Pilih Tanggal") }
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(value = false) }
 
     val scope = rememberCoroutineScope()
     val repository = remember { GoalRepository() }
     val context = LocalContext.current
     
     val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val year = calendar[Calendar.YEAR]
+    val month = calendar[Calendar.MONTH]
+    val day = calendar[Calendar.DAY_OF_MONTH]
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
             targetDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
         },
-        year, month, day
+        year,
+        month,
+        day,
     )
 
     Column(
@@ -135,7 +133,10 @@ fun TambahTargetScreen(navController: NavHostController) {
                             scope.launch {
                                 val result = repository.addGoal(goal)
                                 if (result.isSuccess) {
+                                    Toast.makeText(context, "Goal berhasil disimpan!", Toast.LENGTH_SHORT).show()
                                     navController.popBackStack()
+                                } else {
+                                    Toast.makeText(context, "Gagal: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                                 }
                                 isLoading = false
                             }
