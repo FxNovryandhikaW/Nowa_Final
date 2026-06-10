@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -19,14 +21,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
+import com.example.nowa.data.model.AccountModel
 import com.example.nowa.data.model.TransactionModel
 import com.example.nowa.data.model.TransactionType
+import com.example.nowa.data.repository.AccountRepository
 import com.example.nowa.data.repository.TransactionRepository
 import com.example.nowa.component.Transaction as TransactionUI
 import com.example.nowa.component.recentTransactions
 import com.example.nowa.ui.theme.*
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TambahTransaksiScreen(navController: NavHostController) {
     var isPemasukan by remember { mutableStateOf(true) }
@@ -35,9 +40,26 @@ fun TambahTransaksiScreen(navController: NavHostController) {
     var kategori by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
 
+    // Account Selection State
+    var accounts by remember { mutableStateOf<List<AccountModel>>(emptyList()) }
+    var selectedAccount by remember { mutableStateOf<AccountModel?>(null) }
+    var expanded by remember { mutableStateOf(false) }
+
     val scope = rememberCoroutineScope()
     val repository = remember { TransactionRepository() }
+    val accountRepo = remember { AccountRepository() }
     val context = LocalContext.current
+
+    // Fetch Accounts
+    LaunchedEffect(Unit) {
+        val result = accountRepo.getAccounts()
+        if (result.isSuccess) {
+            accounts = result.getOrDefault(emptyList())
+            if (accounts.isNotEmpty()) {
+                selectedAccount = accounts[0]
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -50,7 +72,13 @@ fun TambahTransaksiScreen(navController: NavHostController) {
             color = White,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            Column(modifier = Modifier.padding(24.dp).fillMaxWidth()) {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+            ) {
                 Box(
                     modifier = Modifier
                         .width(40.dp)
@@ -127,6 +155,42 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                 Box(modifier = Modifier.fillMaxWidth().height(1.dp).background(NowaBackground))
 
                 Spacer(modifier = Modifier.height(24.dp))
+                Text("PILIH AKUN", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
+                
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                ) {
+                    OutlinedTextField(
+                        value = selectedAccount?.name ?: "Pilih Akun",
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = NowaPrimary,
+                            unfocusedBorderColor = NowaBackground
+                        )
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        accounts.forEach { account ->
+                            DropdownMenuItem(
+                                text = { Text("${account.emoji} ${account.name}") },
+                                onClick = {
+                                    selectedAccount = account
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
                 Text("NOMINAL (IDR)", fontSize = 11.sp, fontWeight = FontWeight.Black, color = TextGray, letterSpacing = 1.sp)
                 OutlinedTextField(
                     value = nominal,
@@ -136,7 +200,7 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent
                     )
@@ -152,7 +216,7 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent
                     )
@@ -168,7 +232,7 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent
                     )
@@ -177,11 +241,13 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(32.dp))
                 Button(
                     onClick = {
-                        if (nominal.isNotEmpty() && keterangan.isNotEmpty()) {
+                        if (nominal.isNotEmpty() && keterangan.isNotEmpty() && selectedAccount != null) {
                             isLoading = true
                             val amountLong = nominal.toLongOrNull() ?: 0L
                             
                             val transactionData = TransactionModel(
+                                accountId = selectedAccount!!.id,
+                                accountName = selectedAccount!!.name,
                                 amount = amountLong,
                                 note = keterangan,
                                 category = kategori,
@@ -208,6 +274,8 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                                 }
                                 isLoading = false
                             }
+                        } else if (selectedAccount == null) {
+                            Toast.makeText(context, "Pilih akun terlebih dahulu", Toast.LENGTH_SHORT).show()
                         }
                     },
                     modifier = Modifier.fillMaxWidth().height(60.dp),
