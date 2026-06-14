@@ -97,6 +97,15 @@ fun MainScreen(navController: NavHostController) {
             composable("add_budget") { TambahAnggaranScreen(navController) }
             composable("add_goal") { TambahTargetScreen(navController) }
             composable("add_account") { TambahAkunScreen(navController) }
+
+            composable("edit_goal/{goalId}") { backStackEntry ->
+                val goalId = backStackEntry.arguments?.getString("goalId") ?: ""
+                EditGoalScreen(navController, goalId)
+            }
+            composable("edit_budget/{budgetId}") { backStackEntry ->
+                val budgetId = backStackEntry.arguments?.getString("budgetId") ?: ""
+                EditBudgetScreen(navController, budgetId)
+            }
         }
     }
 }

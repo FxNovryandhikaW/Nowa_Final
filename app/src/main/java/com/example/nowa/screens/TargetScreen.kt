@@ -6,12 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TrackChanges
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.graphics.toColorInt
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
@@ -98,17 +97,19 @@ fun TargetScreen(navController: NavHostController) {
                         }
                     }
                     items(goals) { goal ->
-                        val progress = if (goal.targetAmount > 0) goal.savedAmount.toFloat() / goal.targetAmount else 0f
+                        val progress = if (goal.targetAmount > 0) (goal.savedAmount.toFloat() / goal.targetAmount).coerceAtMost(1f) else 0f
                         val percent = "${(progress * 100).toInt()}%"
-                        GoalCard(
-                            goal.name, 
-                            formatRp(goal.targetAmount), 
-                            formatRp(goal.savedAmount), 
-                            goal.targetDate, 
-                            progress, 
-                            percent, 
-                            goal.emoji
-                        )
+                        Box(modifier = Modifier.clickable { navController.navigate("edit_goal/${goal.id}") }) {
+                            GoalCard(
+                                goal.name, 
+                                formatRp(goal.targetAmount), 
+                                formatRp(goal.savedAmount), 
+                                if (progress >= 1f) "🎯 Tercapai!" else goal.targetDate, 
+                                progress, 
+                                percent, 
+                                goal.emoji
+                            )
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     item {
@@ -130,19 +131,21 @@ fun TargetScreen(navController: NavHostController) {
                         }
                     }
                     items(budgets) { budget ->
-                        val progress = if (budget.limitAmount > 0) budget.spentAmount.toFloat() / budget.limitAmount else 0f
-                        val usageText = "${(progress * 100).toInt()}% terpakai"
+                        val progress = if (budget.limitAmount > 0) (budget.spentAmount.toFloat() / budget.limitAmount).coerceAtMost(1f) else 0f
+                        val usageText = if (progress >= 1f) "⚠️ Limit Tercapai" else "${(progress * 100).toInt()}% terpakai"
                         val remaining = budget.limitAmount - budget.spentAmount
-                        BudgetCard(
-                            budget.name, 
-                            formatRp(budget.spentAmount), 
-                            formatRp(budget.limitAmount), 
-                            progress, 
-                            usageText, 
-                            "Sisa ${formatRp(remaining)}", 
-                            Color(android.graphics.Color.parseColor(budget.colorHex)), 
-                            budget.emoji
-                        )
+                        Box(modifier = Modifier.clickable { navController.navigate("edit_budget/${budget.id}") }) {
+                            BudgetCard(
+                                budget.name, 
+                                formatRp(budget.spentAmount), 
+                                formatRp(budget.limitAmount), 
+                                progress, 
+                                usageText, 
+                                if (remaining > 0) "Sisa ${formatRp(remaining)}" else "Over Budget!",
+                                Color(budget.colorHex.toColorInt()),
+                                budget.emoji
+                            )
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
