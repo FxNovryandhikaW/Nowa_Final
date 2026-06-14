@@ -17,7 +17,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nowa.component.BottomNavigationBar
-import com.example.nowa.screens.*
+import com.example.nowa.screens.auth.*
+import com.example.nowa.screens.account.*
+import com.example.nowa.screens.budget_goal.*
+import com.example.nowa.screens.transaction.*
+import com.example.nowa.screens.main.*
+import com.example.nowa.screens.other.*
 import com.example.nowa.ui.theme.NowaBackground
 import com.example.nowa.ui.theme.NowaPrimary
 import com.example.nowa.ui.theme.NowaTheme

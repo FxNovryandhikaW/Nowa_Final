@@ -4,6 +4,7 @@ import com.example.nowa.data.model.BudgetModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.Calendar
 
 class BudgetRepository {
     private val firestore = FirebaseFirestore.getInstance()
@@ -32,7 +33,23 @@ class BudgetRepository {
                 .get()
                 .await()
             
-            val budgets = snapshot.toObjects(BudgetModel::class.java)
+            val currentMonth = Calendar.getInstance().get(Calendar.MONTH)
+            val budgets = snapshot.toObjects(BudgetModel::class.java).map { budget ->
+                // Check if we need to reset the budget for a new month
+                if (budget.lastResetMonth != -1 && budget.lastResetMonth != currentMonth) {
+                    val resetBudget = budget.copy(spentAmount = 0L, lastResetMonth = currentMonth)
+                    // Update in Firestore (fire and forget or async)
+                    updateBudget(resetBudget)
+                    resetBudget
+                } else if (budget.lastResetMonth == -1) {
+                    // Initialize first month
+                    val initBudget = budget.copy(lastResetMonth = currentMonth)
+                    updateBudget(initBudget)
+                    initBudget
+                } else {
+                    budget
+                }
+            }
             Result.success(budgets)
         } catch (e: Exception) {
             Result.failure(e)
