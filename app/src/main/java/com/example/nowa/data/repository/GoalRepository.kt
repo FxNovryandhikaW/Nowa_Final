@@ -38,4 +38,28 @@ class GoalRepository {
             Result.failure(e)
         }
     }
+
+    suspend fun updateGoal(goal: GoalModel): Result<Unit> {
+        return try {
+            val uid = userId ?: return Result.failure(Exception("User not logged in"))
+            firestore.collection("users").document(uid)
+                .collection("goals").document(goal.id)
+                .set(goal).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteGoal(goalId: String): Result<Unit> {
+        return try {
+            val uid = userId ?: return Result.failure(Exception("User not logged in"))
+            firestore.collection("users").document(uid)
+                .collection("goals").document(goalId)
+                .delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

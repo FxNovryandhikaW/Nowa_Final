@@ -24,6 +24,30 @@ class AccountRepository {
         }
     }
 
+    suspend fun updateAccount(account: AccountModel): Result<Unit> {
+        return try {
+            val uid = userId ?: return Result.failure(Exception("User not logged in"))
+            firestore.collection("users").document(uid)
+                .collection("accounts").document(account.id)
+                .set(account).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteAccount(accountId: String): Result<Unit> {
+        return try {
+            val uid = userId ?: return Result.failure(Exception("User not logged in"))
+            firestore.collection("users").document(uid)
+                .collection("accounts").document(accountId)
+                .delete().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getAccounts(): Result<List<AccountModel>> {
         return try {
             val uid = userId ?: return Result.failure(Exception("User not logged in"))
