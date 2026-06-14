@@ -53,6 +53,14 @@ class TransactionRepository {
             if (transaction.type == TransactionType.EXPENSE) {
                 updateBudgetAccumulation(uid, transaction.category, transaction.amount)
             } else {
+                // Alokasi Goal dari Pemasukan (Jika ada)
+                if (transaction.goalId != null && transaction.goalAmount > 0) {
+                    firestore.collection("users").document(uid)
+                        .collection("goals").document(transaction.goalId)
+                        .update("savedAmount", com.google.firebase.firestore.FieldValue.increment(transaction.goalAmount))
+                        .await()
+                }
+                // Tetap cek akumulasi goal berdasarkan kategori (jika diperlukan)
                 updateGoalAccumulation(uid, transaction.category, transaction.amount)
             }
             

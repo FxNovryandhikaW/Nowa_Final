@@ -15,5 +15,7 @@ data class TransactionModel(
     val category: String = "",
     val note: String = "",
     val type: TransactionType = TransactionType.EXPENSE,
-    val date: Timestamp = Timestamp.now()
+    val date: Timestamp = Timestamp.now(),
+    val goalId: String? = null,
+    val goalAmount: Long = 0
 )
