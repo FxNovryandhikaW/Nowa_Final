@@ -99,15 +99,17 @@ fun TargetScreen(navController: NavHostController) {
                     items(goals) { goal ->
                         val progress = if (goal.targetAmount > 0) (goal.savedAmount.toFloat() / goal.targetAmount).coerceAtMost(1f) else 0f
                         val percent = "${(progress * 100).toInt()}%"
-                        GoalCard(
-                            goal.name, 
-                            formatRp(goal.targetAmount), 
-                            formatRp(goal.savedAmount), 
-                            if (progress >= 1f) "🎯 Tercapai!" else goal.targetDate, 
-                            progress, 
-                            percent, 
-                            goal.emoji
-                        )
+                        Box(modifier = Modifier.clickable { navController.navigate("edit_goal/${goal.id}") }) {
+                            GoalCard(
+                                goal.name, 
+                                formatRp(goal.targetAmount), 
+                                formatRp(goal.savedAmount), 
+                                if (progress >= 1f) "🎯 Tercapai!" else goal.targetDate, 
+                                progress, 
+                                percent, 
+                                goal.emoji
+                            )
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     item {
@@ -132,16 +134,18 @@ fun TargetScreen(navController: NavHostController) {
                         val progress = if (budget.limitAmount > 0) (budget.spentAmount.toFloat() / budget.limitAmount).coerceAtMost(1f) else 0f
                         val usageText = if (progress >= 1f) "⚠️ Limit Tercapai" else "${(progress * 100).toInt()}% terpakai"
                         val remaining = budget.limitAmount - budget.spentAmount
-                        BudgetCard(
-                            budget.name, 
-                            formatRp(budget.spentAmount), 
-                            formatRp(budget.limitAmount), 
-                            progress, 
-                            usageText, 
-                            if (remaining > 0) "Sisa ${formatRp(remaining)}" else "Over Budget!",
-                            Color(budget.colorHex.toColorInt()),
-                            budget.emoji
-                        )
+                        Box(modifier = Modifier.clickable { navController.navigate("edit_budget/${budget.id}") }) {
+                            BudgetCard(
+                                budget.name, 
+                                formatRp(budget.spentAmount), 
+                                formatRp(budget.limitAmount), 
+                                progress, 
+                                usageText, 
+                                if (remaining > 0) "Sisa ${formatRp(remaining)}" else "Over Budget!",
+                                Color(budget.colorHex.toColorInt()),
+                                budget.emoji
+                            )
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
