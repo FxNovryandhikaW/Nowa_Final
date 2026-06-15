@@ -121,7 +121,9 @@ fun EditBudgetScreen(navController: NavHostController, budgetId: String) {
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 
@@ -134,7 +136,9 @@ fun EditBudgetScreen(navController: NavHostController, budgetId: String) {
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 

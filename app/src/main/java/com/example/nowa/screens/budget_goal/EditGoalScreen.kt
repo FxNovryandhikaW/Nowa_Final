@@ -133,7 +133,9 @@ fun EditGoalScreen(navController: NavHostController, goalId: String) {
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 
@@ -147,7 +149,9 @@ fun EditGoalScreen(navController: NavHostController, goalId: String) {
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 

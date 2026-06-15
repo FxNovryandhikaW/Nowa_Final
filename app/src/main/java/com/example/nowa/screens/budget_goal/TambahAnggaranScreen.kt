@@ -76,7 +76,9 @@ fun TambahAnggaranScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f)
+                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f),
+                        focusedTextColor = TextBlack,
+                        unfocusedTextColor = TextBlack
                     )
                 )
 
@@ -90,7 +92,9 @@ fun TambahAnggaranScreen(navController: NavHostController) {
                     shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = NowaPrimary,
-                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f)
+                        unfocusedBorderColor = NowaLightBlue.copy(alpha = 0.5f),
+                        focusedTextColor = TextBlack,
+                        unfocusedTextColor = TextBlack
                     )
                 )
 

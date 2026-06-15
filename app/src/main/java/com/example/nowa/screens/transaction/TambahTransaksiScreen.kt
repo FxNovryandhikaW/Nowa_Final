@@ -184,7 +184,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                         shape = RoundedCornerShape(16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
                     ExposedDropdownMenu(
@@ -215,7 +217,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                         focusedBorderColor = NowaPrimary,
                         unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = TextBlack,
+                        unfocusedTextColor = TextBlack
                     )
                 )
 
@@ -231,7 +235,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                         focusedBorderColor = NowaPrimary,
                         unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = TextBlack,
+                        unfocusedTextColor = TextBlack
                     )
                 )
 
@@ -247,7 +253,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                         focusedBorderColor = NowaPrimary,
                         unfocusedBorderColor = NowaBackground,
                         focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedTextColor = TextBlack,
+                        unfocusedTextColor = TextBlack
                     )
                 )
 
@@ -272,7 +280,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = NowaPrimary,
-                                unfocusedBorderColor = NowaBackground
+                                unfocusedBorderColor = NowaBackground,
+                                focusedTextColor = TextBlack,
+                                unfocusedTextColor = TextBlack
                             )
                         )
                         ExposedDropdownMenu(
@@ -309,7 +319,9 @@ fun TambahTransaksiScreen(navController: NavHostController) {
                             shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = NowaPrimary,
-                                unfocusedBorderColor = NowaBackground
+                                unfocusedBorderColor = NowaBackground,
+                                focusedTextColor = TextBlack,
+                                unfocusedTextColor = TextBlack
                             )
                         )
                     }

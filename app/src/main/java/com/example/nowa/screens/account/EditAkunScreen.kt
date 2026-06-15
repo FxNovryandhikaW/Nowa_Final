@@ -126,7 +126,9 @@ fun EditAkunScreen(navController: NavHostController, initialAccountName: String)
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 
@@ -167,7 +169,9 @@ fun EditAkunScreen(navController: NavHostController, initialAccountName: String)
                             shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = NowaPrimary,
-                                unfocusedBorderColor = NowaBackground
+                                unfocusedBorderColor = NowaBackground,
+                                focusedTextColor = TextBlack,
+                                unfocusedTextColor = TextBlack
                             )
                         )
                     }
@@ -182,7 +186,9 @@ fun EditAkunScreen(navController: NavHostController, initialAccountName: String)
                             shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = NowaPrimary,
-                                unfocusedBorderColor = NowaBackground
+                                unfocusedBorderColor = NowaBackground,
+                                focusedTextColor = TextBlack,
+                                unfocusedTextColor = TextBlack
                             )
                         )
                     }
@@ -196,7 +202,9 @@ fun EditAkunScreen(navController: NavHostController, initialAccountName: String)
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = NowaPrimary,
-                            unfocusedBorderColor = NowaBackground
+                            unfocusedBorderColor = NowaBackground,
+                            focusedTextColor = TextBlack,
+                            unfocusedTextColor = TextBlack
                         )
                     )
 

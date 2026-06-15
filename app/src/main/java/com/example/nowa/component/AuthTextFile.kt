@@ -28,7 +28,9 @@ fun AuthTextField(label: String, value: String, placeholder: String, onValueChan
                 focusedContainerColor = Color(0x00000000),
                 unfocusedContainerColor = Color(0x00000000),
                 focusedIndicatorColor = Color(0x00000000),
-                unfocusedIndicatorColor = Color(0x00000000)
+                unfocusedIndicatorColor = Color(0x00000000),
+                focusedTextColor = TextBlack,
+                unfocusedTextColor = TextBlack
             ),
             singleLine = true
         )

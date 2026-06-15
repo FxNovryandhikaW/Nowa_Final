@@ -31,7 +31,9 @@ fun TambahAnggaranBottomSheet(onDismiss: () -> Unit) {
                     focusedContainerColor = White,
                     unfocusedContainerColor = White,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
 
@@ -45,7 +47,9 @@ fun TambahAnggaranBottomSheet(onDismiss: () -> Unit) {
                     focusedContainerColor = White,
                     unfocusedContainerColor = White,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
 

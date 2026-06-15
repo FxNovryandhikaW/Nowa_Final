@@ -221,7 +221,9 @@ fun MasukScreen(navController: NavHostController) {
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = NowaPrimary
+                    focusedBorderColor = NowaPrimary,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -245,7 +247,9 @@ fun MasukScreen(navController: NavHostController) {
                 visualTransformation = PasswordVisualTransformation(),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = NowaPrimary
+                    focusedBorderColor = NowaPrimary,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
             
@@ -424,7 +428,9 @@ fun DaftarScreen(navController: NavHostController) {
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = NowaPrimary
+                    focusedBorderColor = NowaPrimary,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -439,7 +445,9 @@ fun DaftarScreen(navController: NavHostController) {
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = NowaPrimary
+                    focusedBorderColor = NowaPrimary,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -455,7 +463,9 @@ fun DaftarScreen(navController: NavHostController) {
                 visualTransformation = PasswordVisualTransformation(),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = NowaPrimary
+                    focusedBorderColor = NowaPrimary,
+                    focusedTextColor = TextBlack,
+                    unfocusedTextColor = TextBlack
                 )
             )
             
